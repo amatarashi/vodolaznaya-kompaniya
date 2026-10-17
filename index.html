@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ФлотСервис — подводный осмотр судов водолазами и дроном</title>
+<meta name="description" content="Осмотр подводной части судов за 3 часа с момента постановки на якорь. Аттестованные водолазы и подводный дрон Falcon. Акт и видео по Постановлению №1867. Мурманск, Санкт-Петербург, Усть-Луга, Приморск, Находка.">
+<meta name="theme-color" content="#070d14">
+<meta property="og:title" content="ФлотСервис — подводный осмотр судов">
+<meta property="og:description" content="Водолазы и дрон Falcon. Осмотр до 3 часов, акт и видео по ПП №1867.">
+<meta property="og:image" content="assets/diver.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23070d14'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23c9a96e' stroke-width='1.5'/%3E%3Cpath d='M16 4v24M4 16h24' stroke='%23c9a96e' stroke-width='1'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<noscript><style>.loader{display:none}.line>span{transform:none}</style></noscript>
+</head>
+<body>
+
+<a class="skip" href="#main">К содержанию</a>
+
+<!-- Прелоадер: погружение -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__in">
+    <span class="loader__mark"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15"/><path d="M20 2v36M2 20h36"/></svg></span>
+    <span class="loader__name">ФлотСервис</span>
+    <span class="loader__depth"><b id="loaderDepth">000</b> м</span>
+  </div>
+  <div class="loader__bar"><i id="loaderBar"></i></div>
+</div>
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============ ШАПКА ============ -->
+<header class="header" id="top">
+  <div class="wrap header__in">
+    <a href="#top" class="logo" aria-label="ФлотСервис — в начало сайта">
+      <span class="logo__mark" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15"/><path d="M20 2v36M2 20h36"/></svg></span>
+      <span class="logo__txt">ФлотСервис<small>Подводный осмотр судов</small></span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Основное меню">
+      <a href="#services"><i>01</i>Услуги</a>
+      <a href="#falcon"><i>02</i>Дрон Falcon</a>
+      <a href="#video"><i>03</i>Видео</a>
+      <a href="#process"><i>04</i>Процесс</a>
+      <a href="#geo"><i>05</i>География</a>
+      <a href="#clients"><i>06</i>Клиенты</a>
+      <a href="#faq"><i>07</i>Вопросы</a>
+      <div class="nav__foot">
+        <a href="tel:+79113124949">+7 (911) 312-49-49</a>
+        <a href="mailto:flotservicecompany@mail.ru">flotservicecompany@mail.ru</a>
+      </div>
+    </nav>
+    <span class="header__depth" aria-hidden="true"><b data-depth>000</b> м</span>
+    <a href="tel:+79113124949" class="header__phone">+7 (911) 312-49-49</a>
+    <a href="#contact" class="btn btn--line btn--sm header__cta magnetic">Связаться</a>
+    <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav"><span></span><span></span></button>
+  </div>
+</header>
+
+<!-- ============ ГЛУБИНОМЕР ============ -->
+<aside class="gauge" aria-hidden="true">
+  <span class="gauge__value"><b data-depth>000</b> м</span>
+  <div class="gauge__track"><div class="gauge__fill" id="gaugeFill"></div></div>
+  <span class="gauge__section" id="gaugeSection">поверхность</span>
+</aside>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<section class="hero" data-zone="поверхность">
+  <video class="hero__video" autoplay muted loop playsinline preload="auto" poster="assets/hero-poster.jpg" aria-hidden="true">
+    <source src="assets/hero-loop.mp4" type="video/mp4">
+  </video>
+  <div class="hero__shade"></div>
+
+  <div class="wrap hero__in">
+    <div class="hero__meta">
+      <span class="mono">N 68°58′ · E 33°05′</span>
+      <span class="mono">Мурманск — Санкт-Петербург — Находка</span>
+    </div>
+
+    <h1 class="hero__title">
+      <span class="line"><span>Безопасность</span></span>
+      <span class="line"><span><em>ниже</em> ватерлинии</span></span>
+    </h1>
+
+    <div class="hero__bottom">
+      <p class="hero__lead">Осмотр подводной части судов за&nbsp;3&nbsp;часа с&nbsp;момента постановки на&nbsp;якорь. Аттестованные водолазы и&nbsp;подводный дрон Falcon. Акт и&nbsp;видео — по&nbsp;Постановлению Правительства №1867.</p>
+      <div class="hero__btns">
+        <a href="#contact" class="btn btn--brass magnetic">Рассчитать осмотр <span class="arr" aria-hidden="true">→</span></a>
+        <a href="#video" class="btn btn--text" data-film><span class="play-dot" aria-hidden="true"></span>Смотреть фильм · 2:10</a>
+      </div>
+    </div>
+
+    <ul class="hero__stats">
+      <li><b>3<small>ч</small></b><span>максимум на&nbsp;осмотр одного судна</span></li>
+      <li><b>5</b><span>портов от&nbsp;Баренцева моря до&nbsp;Японского</span></li>
+      <li><b>14</b><span>компаний рекомендуют нас, включая «Газпром Нефть»</span></li>
+      <li><b>300<small>м</small></b><span>рабочая глубина дрона Falcon</span></li>
+    </ul>
+  </div>
+  <a href="#trust" class="hero__scroll" aria-label="Листать вниз"><span>Погружение</span><i></i></a>
+</section>
+
+<!-- ============ ЛЕНТА ДОВЕРИЯ ============ -->
+<div class="trust" id="trust" aria-label="Нас рекомендуют">
+  <div class="marquee"><div class="marquee__row">
+    <span>ПАО «Газпром Нефть»</span><i>✦</i><span>ПАО «Роснефть»</span><i>✦</i><span>АО «Белфрахт»</span><i>✦</i><span>Инфотек Балтика</span><i>✦</i><span>White Agate Marine</span><i>✦</i><span>Мурманфишпродактс</span><i>✦</i><span>Serpentine Marine</span><i>✦</i><span>Южный Флот</span><i>✦</i><span>Инвест Флот</span><i>✦</i>
+  </div></div>
+</div>
+
+<!-- ============ МАНИФЕСТ ============ -->
+<section class="section manifest" data-zone="о компании">
+  <div class="wrap">
+    <p class="manifest__txt reveal-words">Мы&nbsp;проверяем то, что скрыто под водой: корпус, днище и&nbsp;винто-рулевой комплекс. Ищем посторонние предметы, взрывчатые вещества и&nbsp;следы вмешательства — <em>до&nbsp;того, как они станут проблемой.</em></p>
+    <div class="manifest__sign">
+      <span class="mono">ООО «ФлотСервис»</span>
+      <span class="mono">Надёжность · Опыт · Безопасность</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ДЛЯ КОГО ============ -->
+<section class="section" id="who" data-zone="для кого">
+  <div class="wrap">
+    <header class="shead">
+      <p class="shead__num mono"><span class="depth-tag">— 0 м</span> Для кого</p>
+      <h2 class="h2">Одно судно или целый флот — <em>одинаково внимательно</em></h2>
+    </header>
+
+    <div class="switch" role="tablist" aria-label="Выберите формат">
+      <button role="tab" aria-selected="true" aria-controls="tab-one" id="t-one" class="switch__btn is-active" data-tab="one"><i class="mono">A</i>У меня одно судно</button>
+      <button role="tab" aria-selected="false" aria-controls="tab-fleet" id="t-fleet" class="switch__btn" data-tab="fleet"><i class="mono">B</i>У нас флот / компания</button>
+    </div>
+
+    <div class="who">
+      <div class="who__panel is-active" id="tab-one" role="tabpanel" aria-labelledby="t-one">
+        <div class="who__visual" aria-hidden="true">
+          <svg viewBox="0 0 120 40"><use href="#ship"/></svg>
+          <span class="mono">1 судно · разовый осмотр</span>
+        </div>
+        <div class="who__body">
+          <h3>Капитанам и частным судовладельцам</h3>
+          <ul class="list">
+            <li>Разовый осмотр одного судна — без абонемента и&nbsp;обязательств</li>
+            <li>Быстрый осмотр на&nbsp;якоре, без лишних простоев</li>
+            <li>Объясним, какие документы нужны, и&nbsp;подготовим их за&nbsp;вас</li>
+            <li>Подберём формат: водолаз, дрон или вместе — без лишних затрат</li>
+          </ul>
+          <a href="#contact" class="link" data-format="Разовый осмотр">Заказать разовый осмотр <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+      <div class="who__panel" id="tab-fleet" role="tabpanel" aria-labelledby="t-fleet" hidden>
+        <div class="who__visual who__visual--fleet" aria-hidden="true">
+          <div><svg viewBox="0 0 120 40"><use href="#ship"/></svg><svg viewBox="0 0 120 40"><use href="#ship"/></svg><svg viewBox="0 0 120 40"><use href="#ship"/></svg><svg viewBox="0 0 120 40"><use href="#ship"/></svg></div>
+          <span class="mono">флот · договор на обслуживание</span>
+        </div>
+        <div class="who__body">
+          <h3>Судоходным, стивидорным и&nbsp;нефтегазовым компаниям</h3>
+          <ul class="list">
+            <li>Регулярное обслуживание флота по&nbsp;согласованному графику</li>
+            <li>Безопасность судов перед погрузкой и&nbsp;разгрузкой</li>
+            <li>Выездные группы в&nbsp;любом из&nbsp;портов присутствия</li>
+            <li>Соответствие стандартам безопасности крупнейших нефтегазовых проектов</li>
+          </ul>
+          <a href="#contact" class="link" data-format="Договор на обслуживание флота">Обсудить договор на обслуживание <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="sizes">
+      <span class="mono">Суда любой длины</span>
+      <i>до 100 м</i><i>до 150 м</i><i>до 180 м</i><i>до 200 м</i><i>свыше 200 м</i>
+    </div>
+  </div>
+</section>
+
+<!-- ============ УСЛУГИ ============ -->
+<section class="section" id="services" data-zone="услуги">
+  <div class="wrap">
+    <header class="shead">
+      <p class="shead__num mono"><span class="depth-tag">— 0 м</span> Услуги</p>
+      <h2 class="h2">Четыре компетенции. <em>Один стандарт.</em></h2>
+    </header>
+    <ol class="rows">
+      <li class="row">
+        <span class="row__n mono">01</span>
+        <h3 class="row__t">Водолазный осмотр подводной части</h3>
+        <p class="row__d">Только аттестованные водолазы. Корпус, днище, винто-рулевой комплекс — на&nbsp;посторонние предметы, взрывчатые вещества и&nbsp;следы вмешательства.</p>
+        <a href="#video" class="row__a" aria-label="Смотреть видео водолазного осмотра">↗</a>
+      </li>
+      <li class="row">
+        <span class="row__n mono">02</span>
+        <h3 class="row__t">Осмотр подводным дроном Falcon <sup class="mono">new</sup></h3>
+        <p class="row__d">Телеуправляемый аппарат с&nbsp;камерой и&nbsp;прожекторами. Видео — на&nbsp;монитор на&nbsp;борту в&nbsp;реальном времени. Выручает, когда спуск водолаза затруднён.</p>
+        <a href="#falcon" class="row__a" aria-label="Подробнее о дроне">↗</a>
+      </li>
+      <li class="row">
+        <span class="row__n mono">03</span>
+        <h3 class="row__t">Видеофиксация и акт осмотра</h3>
+        <p class="row__d">Обязательная подводная видеосъёмка каждого осмотра. По&nbsp;итогам — акт и&nbsp;видеоматериалы по&nbsp;требованиям ПП&nbsp;№1867 от&nbsp;25.11.2025.</p>
+        <a href="#guarantees" class="row__a" aria-label="Подробнее об акте и видео">↗</a>
+      </li>
+      <li class="row">
+        <span class="row__n mono">04</span>
+        <h3 class="row__t">Передача в контролирующие органы</h3>
+        <p class="row__d">Документы уходят заказчику и&nbsp;в&nbsp;контролирующие органы в&nbsp;сжатые сроки по&nbsp;защищённым каналам связи.</p>
+        <a href="#process" class="row__a" aria-label="Как передаём документы">↗</a>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ ДРОН FALCON (светлая секция) ============ -->
+<section class="section light falcon" id="falcon" data-zone="дрон falcon">
+  <div class="wrap">
+    <header class="shead">
+      <p class="shead__num mono"><span class="depth-tag">— 0 м</span> Новое направление</p>
+      <h2 class="h2">Подводный дрон <em>Falcon</em></h2>
+    </header>
+
+    <div class="falcon__grid">
+      <figure class="drone">
+        <div class="drone__img">
+          <img src="assets/falcon.jpg" alt="Подводный дрон Saab Seaeye Falcon — жёлтый корпус, белая защитная рама, движители и прожекторы" width="660" height="371">
+          <button class="hot" style="left:66%;top:27%" data-hot="0" aria-label="Камера"><span>1</span></button>
+          <button class="hot" style="left:76%;top:58%" data-hot="1" aria-label="Прожекторы"><span>2</span></button>
+          <button class="hot" style="left:25%;top:46%" data-hot="2" aria-label="Движители"><span>3</span></button>
+          <button class="hot" style="left:40%;top:22%" data-hot="3" aria-label="Корпус"><span>4</span></button>
+        </div>
+        <figcaption class="drone__tip" id="droneTip" aria-live="polite">
+          <span class="mono">Saab Seaeye Falcon</span>
+          <b>Нажмите на точки</b>
+          <span>— расскажем, из чего состоит аппарат.</span>
+        </figcaption>
+      </figure>
+
+      <div class="falcon__text">
+        <p class="falcon__lead">Профессиональный портативный подводный аппарат. Самая успешная электрическая подводная робототехническая система своего класса.</p>
+        <p>Falcon проверен в&nbsp;многочисленных сложных и&nbsp;ответственных миссиях в&nbsp;коммерческом, охранном и&nbsp;научном секторах. Он обеспечивает исключительную точность управления и&nbsp;диагностику в&nbsp;реальном времени, позволяет настраивать экран пилота и&nbsp;включать автоматическое удержание позиции.</p>
+        <dl class="specs">
+          <div><dt class="mono">Рабочая глубина</dt><dd>300<small>м</small></dd></div>
+          <div><dt class="mono">Длина аппарата</dt><dd>≈1<small>м</small></dd></div>
+          <div><dt class="mono">Движители</dt><dd>5</dd></div>
+          <div><dt class="mono">Видео на борт</dt><dd><em>live</em></dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <h3 class="h3">Что дрон делает для вас</h3>
+    <div class="tasks">
+      <div class="task"><span class="mono">01</span><h4>Осмотр корпуса и днища</h4><p>Проходит вдоль борта и&nbsp;под днищем, передавая картинку оператору без пауз.</p></div>
+      <div class="task"><span class="mono">02</span><h4>Винто-рулевой комплекс</h4><p>Подробно снимает винт, руль, кингстонные решётки и&nbsp;другие сложные участки.</p></div>
+      <div class="task"><span class="mono">03</span><h4>Поиск посторонних предметов</h4><p>Собственный свет даёт детальную картинку даже на&nbsp;глубине и&nbsp;в&nbsp;мутной воде.</p></div>
+      <div class="task"><span class="mono">04</span><h4>Удержание позиции</h4><p>Зависает у&nbsp;подозрительного участка, чтобы рассмотреть и&nbsp;записать его без спешки.</p></div>
+      <div class="task"><span class="mono">05</span><h4>Там, где водолазу сложно</h4><p>Предварительный обзор и&nbsp;труднодоступные места, где спуск человека затруднён.</p></div>
+      <div class="task"><span class="mono">06</span><h4>Вместе с водолазами</h4><p>Совмещаем с&nbsp;водолазным осмотром в&nbsp;одном выезде — быстрее и&nbsp;надёжнее.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Кинематографичная вставка -->
+<section class="deck" aria-label="Оператор дрона на палубе">
+  <img src="assets/drone-deck.jpg" alt="Оператор на палубе управляет дроном и видит корпус судна на мониторе" loading="lazy" width="1920" height="586" data-parallax>
+  <div class="wrap deck__txt">
+    <p class="quote">«Вы видите то&nbsp;же, что видим мы. Каждый осмотр записывается на&nbsp;видео и&nbsp;прикладывается к&nbsp;акту.»</p>
+    <a href="#contact" class="btn btn--brass magnetic" data-format="Дрон Falcon">Заказать осмотр дроном <span class="arr" aria-hidden="true">→</span></a>
+  </div>
+</section>
+
+<!-- ============ ВИДЕО ============ -->
+<section class="section video-sec" id="video" data-zone="видео">
+  <div class="wrap">
+    <header class="shead">
+      <p class="shead__num mono"><span class="depth-tag">— 0 м</span> Реальная работа</p>
+      <h2 class="h2">Осмотр <em>глазами водолаза</em></h2>
+    </header>
+    <div class="player" id="player">
+      <video id="mainVideo" preload="none" playsinline poster="assets/divers-poster.jpg">
+        <source src="assets/divers.mp4" type="video/mp4">
+        Ваш браузер не поддерживает видео.
+      </video>
+      <button class="player__btn" id="playBtn" aria-label="Смотреть видео осмотра">
+        <span class="player__circle"><span class="play-tri"></span></span>
+        <span class="player__label mono">Смотреть · 02:10</span>
+      </button>
+      <button class="player__close" id="closeFilm" aria-label="Закрыть полноэкранный просмотр">✕</button>
+      <div class="player__hud mono" aria-hidden="true"><span><i></i>REC</span><span>Осмотр корпуса · реальная съёмка</span></div>
+    </div>
+    <p class="video-sec__cap">Настоящее видео наших водолазов: проход вдоль борта, днище и&nbsp;винт. Такие материалы получает каждый заказчик вместе с&nbsp;актом.</p>
+  </div>
+</section>
+
+<!-- ============ ГАРАНТИИ ============ -->
+<section class="section" id="guarantees" data-zone="гарантии">
+  <div class="wrap">
+    <header class="shead">
+      <p class="shead__num mono"><span class="depth-tag">— 0 м</span> Наши гарантии</p>
+      <h2 class="h2">Три обещания <em>каждому клиенту</em></h2>
+    </header>
+    <div class="promises">
+      <div class="promise"><span class="mono">I</span><b class="promise__big">3 часа</b><h3>Оперативность</h3><p>Осмотр судна занимает не&nbsp;более трёх часов с&nbsp;момента постановки на&nbsp;якорь.</p></div>
+      <div class="promise"><span class="mono">II</span><b class="promise__big">Акт + видео</b><h3>Полный комплект документов</h3><p>Строго по&nbsp;требованиям Постановления Правительства №1867 от&nbsp;25.11.2025.</p></div>
+      <div class="promise"><span class="mono">III</span><b class="promise__big">Быстро</b><h3>Передача материалов</h3><p>Заказчику и&nbsp;в&nbsp;контролирующие органы — через защищённые каналы связи.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ КАК РАБОТАЕМ ============ -->
+<section class="section" id="process" data-zone="процесс">
+  <div class="wrap">
+    <header class="shead">
+      <p class="shead__num mono"><span class="depth-tag">— 0 м</span> Процесс</p>
+      <h2 class="h2">От заявки до акта — <em>пять шагов</em></h2>
+    </header>
+    <ol class="steps">
+      <li><span class="steps__n mono">01</span><h3>Заявка</h3><p>Звонок, письмо или форма на&nbsp;сайте</p></li>
+      <li><span class="steps__n mono">02</span><h3>Выезд группы</h3><p>В нужный порт в&nbsp;кратчайшие сроки</p></li>
+      <li><span class="steps__n mono">03</span><h3>Осмотр</h3><p>Водолаз и/или дрон — до&nbsp;3&nbsp;часов</p></li>
+      <li><span class="steps__n mono">04</span><h3>Акт и видео</h3><p>По&nbsp;Постановлению №1867</p></li>
+      <li><span class="steps__n mono">05</span><h3>Передача</h3><p>Заказчику и&nbsp;в&nbsp;контролирующие органы</p></li>
+    </ol>
+    <div class="individual">
+      <p class="individual__q">Разовый осмотр или регулярное обслуживание флота — мы&nbsp;обсуждаем каждую задачу отдельно и&nbsp;предлагаем <em>удобные именно вам</em> условия.</p>
+      <div class="individual__tags mono"><i>Разовые осмотры</i><i>Регулярное сотрудничество</i><i>Суда любой длины</i></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ГЕОГРАФИЯ ============ -->
+<section class="section geo" id="geo" data-zone="география">
+  <div class="geo__bg" aria-hidden="true"></div>
+  <div class="wrap geo__in">
+    <header class="shead">
+      <p class="shead__num mono"><span class="depth-tag">— 0 м</span> География</p>
+      <h2 class="h2">Работаем там, <em>где ваши суда</em></h2>
+    </header>
+    <ul class="ports">
+      <li class="port port--main"><span class="mono port__c">68°58′ N · 33°05′ E</span><h3>Мурманск и область</h3><p>Териберка · Волоковая · Кулонга — Баренцево море</p><span class="port__tag mono">База</span></li>
+      <li class="port"><span class="mono port__c">59°56′ N · 30°18′ E</span><h3>Большой порт Санкт-Петербург</h3><p>Балтийское море</p></li>
+      <li class="port"><span class="mono port__c">59°40′ N · 28°24′ E</span><h3>Усть-Луга</h3><p>Финский залив</p></li>
+      <li class="port"><span class="mono port__c">60°21′ N · 28°37′ E</span><h3>Приморск</h3><p>Финский залив</p></li>
+      <li class="port"><span class="mono port__c">42°49′ N · 132°53′ E</span><h3>Находка</h3><p>Японское море</p></li>
+    </ul>
+    <p class="geo__note">Выездные группы укомплектованы и&nbsp;направляются в&nbsp;любой из&nbsp;портов в&nbsp;кратчайшие сроки. Опыт в&nbsp;Арктике — в&nbsp;любых погодных и&nbsp;логистических условиях.</p>
+  </div>
+</section>
+
+<!-- ============ КЛИЕНТЫ (светлая секция) ============ -->
+<section class="section light" id="clients" data-zone="клиенты">
+  <div class="wrap">
+    <header class="shead">
+      <p class="shead__num mono"><span class="depth-tag">— 0 м</span> Рекомендации</p>
+      <h2 class="h2">Нам доверяют <em>крупнейшие</em></h2>
+    </header>
+    <div class="majors">
+      <div class="major"><span class="mono">Рекомендательное письмо</span><b>ПАО «Газпром Нефть»</b><p>Подтверждает высокий уровень исполнения работ, надёжность и&nbsp;соответствие стандартам безопасности крупнейших нефтегазовых проектов.</p></div>
+      <div class="major"><span class="mono">Рекомендательное письмо</span><b>ПАО «Роснефть»</b><p>Положительная рекомендация от&nbsp;одной из&nbsp;крупнейших нефтяных компаний страны.</p></div>
+    </div>
+    <ul class="logos">
+      <li>АО «Белфрахт»</li><li>ООО «Инфотек Балтика»</li><li>РК «Андер»</li><li>РК им.&nbsp;М.И.&nbsp;Калинина</li>
+      <li>ООО «Саами»</li><li>ООО «Мурманфишпродактс»</li><li>ООО «Южный Флот»</li><li>ООО «Инвест Флот»</li>
+      <li>White Agate Marine SPC</li><li>Serpentine Marine SPC</li><li>ООО «Первые горизонты»</li><li>ООО «Идас»</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section" id="faq" data-zone="вопросы">
+  <div class="wrap faq">
+    <header class="shead shead--col">
+      <p class="shead__num mono"><span class="depth-tag">— 0 м</span> Вопросы</p>
+      <h2 class="h2">Частые <em>вопросы</em></h2>
+      <p class="muted">Не нашли ответ? Позвоните — объясним за&nbsp;пять минут.</p>
+      <a href="tel:+79113124949" class="link">+7 (911) 312-49-49 <span aria-hidden="true">→</span></a>
+    </header>
+    <div class="acc">
+      <details open><summary>Сколько стоит осмотр?</summary><p>Стоимость зависит от&nbsp;длины судна, порта и&nbsp;формата работ (водолаз, дрон или вместе). Рассчитываем индивидуально — оставьте заявку, и&nbsp;мы пришлём предложение.</p></details>
+      <details><summary>Вы работаете с одним судном и небольшими компаниями?</summary><p>Да. Делаем разовые осмотры одного судна без абонемента — так же внимательно, как для крупных компаний с&nbsp;флотом.</p></details>
+      <details><summary>Какие документы я получу?</summary><p>Акт осмотра и&nbsp;видеоматериалы по&nbsp;требованиям Постановления Правительства №1867 от&nbsp;25.11.2025. Передаём их вам и&nbsp;в&nbsp;контролирующие органы.</p></details>
+      <details><summary>Чем осмотр дроном отличается от водолазного?</summary><p>Дрон Falcon управляется с&nbsp;борта, видео идёт на&nbsp;монитор в&nbsp;реальном времени — удобно для предварительного обзора и&nbsp;мест, где спуск водолаза затруднён. Водолаз может детально обследовать участок руками. Часто лучший результат — оба формата в&nbsp;одном выезде.</p></details>
+      <details><summary>Как быстро вы приедете?</summary><p>Выездные группы укомплектованы и&nbsp;направляются в&nbsp;нужный порт в&nbsp;кратчайшие сроки. Сам осмотр — не&nbsp;более 3&nbsp;часов с&nbsp;момента постановки на&nbsp;якорь.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ЗАЯВКА ============ -->
+<section class="section contact" id="contact" data-zone="дно · 300 м">
+  <div class="wrap contact__in">
+    <div class="contact__l">
+      <p class="shead__num mono"><span class="depth-tag depth-tag--fixed">— 300 м</span> Заявка</p>
+      <h2 class="h2 h2--xl">Вы достигли дна.<br><em>Поговорим о&nbsp;вашем судне.</em></h2>
+      <p class="muted">Заполните форму — перезвоним в&nbsp;рабочее время и&nbsp;предложим формат осмотра. Или свяжитесь напрямую:</p>
+      <ul class="contacts">
+        <li><span class="mono">Телефон</span><a href="tel:+79113124949">+7 (911) 312-49-49</a></li>
+        <li><span class="mono">Телефон</span><a href="tel:+79215129758">+7 (921) 512-97-58</a></li>
+        <li><span class="mono">Почта</span><a href="mailto:flotservicecompany@mail.ru">flotservicecompany@mail.ru</a></li>
+      </ul>
+      <p class="muted small">Генеральный директор — Р.Ю.&nbsp;Томских</p>
+    </div>
+
+    <form class="form" id="form" novalidate>
+      <div class="form__row">
+        <label class="field"><input name="name" autocomplete="name" placeholder=" "><span>Ваше имя</span></label>
+        <label class="field"><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder=" " required><span>Телефон *</span></label>
+      </div>
+      <div class="form__row">
+        <label class="field"><input name="company" autocomplete="organization" placeholder=" "><span>Компания</span></label>
+        <label class="field"><input name="vessel" placeholder=" "><span>Название судна</span></label>
+      </div>
+      <div class="form__row">
+        <label class="field field--select"><select name="length"><option>Не знаю</option><option>до 100 м</option><option>до 150 м</option><option>до 180 м</option><option>до 200 м</option><option>свыше 200 м</option></select><span>Длина судна</span></label>
+        <label class="field field--select"><select name="port"><option>Мурманск и область</option><option>Санкт-Петербург</option><option>Усть-Луга</option><option>Приморск</option><option>Находка</option><option>Другой</option></select><span>Порт</span></label>
+      </div>
+      <fieldset class="chips">
+        <legend class="mono">Формат</legend>
+        <label><input type="radio" name="format" value="Водолаз" checked><span>Водолаз</span></label>
+        <label><input type="radio" name="format" value="Дрон Falcon"><span>Дрон Falcon</span></label>
+        <label><input type="radio" name="format" value="Водолаз + дрон"><span>Вместе</span></label>
+        <label><input type="radio" name="format" value="Подскажите"><span>Подскажите</span></label>
+      </fieldset>
+      <label class="field"><textarea name="comment" rows="2" placeholder=" "></textarea><span>Комментарий — например, судно на якоре, нужен акт</span></label>
+      <button class="btn btn--brass btn--full magnetic" type="submit">Получить расчёт <span class="arr" aria-hidden="true">→</span></button>
+      <p class="form__note">Нажимая кнопку, вы соглашаетесь с&nbsp;обработкой персональных данных.</p>
+      <div class="form__ok" id="formOk" hidden>
+        <b>Спасибо. Заявка сформирована.</b>
+        <p>Откроется почтовая программа с&nbsp;готовым письмом — нажмите «Отправить». Если не&nbsp;открылась, позвоните: <a href="tel:+79113124949">+7 (911) 312-49-49</a>.</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__in">
+      <div><span class="mono">Адрес</span><p>183052, г. Мурманск,<br>ул. Софьи Перовской, д. 17, оф. 304</p></div>
+      <div><span class="mono">Связь</span><p><a href="tel:+79113124949">+7 (911) 312-49-49</a><br><a href="tel:+79215129758">+7 (921) 512-97-58</a><br><a href="mailto:flotservicecompany@mail.ru">flotservicecompany@mail.ru</a></p></div>
+      <div><span class="mono">Компания</span><p>ООО «ФЛОТСЕРВИС»<br>Реквизиты — по&nbsp;запросу</p></div>
+      <div class="footer__up"><a href="#top" class="logo-up" data-top>Наверх <span aria-hidden="true">↑</span></a></div>
+    </div>
+    <a href="#top" class="footer__word" data-top aria-label="ФлотСервис — в начало сайта">ФлотСервис</a>
+    <div class="footer__bottom mono"><span>© <span id="year">2026</span> ООО «ФлотСервис»</span><span>Надёжность · Опыт · Безопасность</span></div>
+  </div>
+</footer>
+
+<!-- Мобильная панель действий -->
+<div class="mbar">
+  <a href="tel:+79113124949" class="mbar__call" aria-label="Позвонить"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg></a>
+  <a href="#contact" class="mbar__cta">Рассчитать осмотр <span aria-hidden="true">→</span></a>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ship" viewBox="0 0 120 40"><path d="M4 26h112l-10 12H16z" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M30 26V16h40v10M74 26V10h14v16M78 10V4h6v6" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M0 39h120" stroke="currentColor" stroke-width=".6" stroke-dasharray="2 3"/></symbol>
+</svg>
+
+<script src="script.js"></script>
+</body>
+</html>
