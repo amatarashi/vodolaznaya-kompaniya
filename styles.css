@@ -220,16 +220,57 @@ em{font-style:italic;font-family:var(--serif);color:var(--brass);font-weight:400
 /* ---------- Falcon ---------- */
 .falcon__grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(36px,6vw,96px);align-items:start}
 .drone{position:relative;background:#fff;padding:6% 6% 0;box-shadow:0 60px 120px -60px rgba(60,45,20,.35)}
-.drone__img{position:relative}
-.drone img{width:100%;height:auto}
-.hot{position:absolute;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;background:var(--ink);color:var(--brass);font-family:var(--mono);font-size:11px;display:grid;place-items:center;transition:transform .4s var(--ease),background .3s,color .3s}
+/* Интерактивный дрон: приближение к детали, «прожектор», экскурсия.
+   Координаты и масштаб — анимируемые CSS-переменные, за ними плавно едут фото, точки и подсветка. */
+@property --zx{syntax:"<percentage>";inherits:true;initial-value:50%}
+@property --zy{syntax:"<percentage>";inherits:true;initial-value:50%}
+@property --zs{syntax:"<number>";inherits:true;initial-value:1}
+@property --spot{syntax:"<number>";inherits:true;initial-value:0}
+/* overflow:clip, а не hidden: иначе браузер прокручивает рамку к точке, получившей фокус, и приближение съезжает */
+.drone__img{position:relative;overflow:hidden;overflow:clip;cursor:default;touch-action:pan-y}
+.drone__stage{position:relative;--zx:50%;--zy:50%;--zs:1;--spot:0;transform-origin:0 0;
+  transform:translate(calc(50% - var(--zx) * var(--zs)),calc(50% - var(--zy) * var(--zs))) scale(var(--zs));
+  transition:--zx 1s var(--ease),--zy 1s var(--ease),--zs 1s var(--ease),--spot .8s var(--ease)}
+.drone__stage.is-zoomed{--zs:1.9;--spot:1;cursor:zoom-out}
+.drone img{width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+.drone__spot{position:absolute;inset:-60%;pointer-events:none;opacity:var(--spot);
+  background:radial-gradient(circle 70px at calc(var(--zx) * .4545 + 27.27%) calc(var(--zy) * .4545 + 27.27%),transparent 0 60%,rgba(7,13,20,.5) 100%)}
+.hot{position:absolute;left:var(--x);top:var(--y);z-index:2;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;background:var(--ink);color:var(--brass);font-family:var(--mono);font-size:11px;display:grid;place-items:center;
+  --hs:1;transform:scale(calc(var(--hs) / var(--zs)));transition:background .3s,color .3s,opacity .4s}
 .hot::before{content:"";position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(7,13,20,.45);animation:ring 2.4s var(--ease) infinite}
-.hot:hover,.hot.is-active{transform:scale(1.15);background:var(--brass);color:var(--ink)}
-.hot.is-active::before{animation:none;border-color:var(--brass)}
+.hot:hover,.hot.is-active{--hs:1.15;background:var(--brass);color:var(--ink)}
+.hot.is-active::before{animation:none;border-color:var(--brass);inset:-9px;border-width:2px}
+.drone__stage.is-zoomed .hot:not(.is-active){opacity:.55}
+.drone__stage.is-zoomed .hot:not(.is-active):hover{opacity:1}
 @keyframes ring{0%{transform:scale(.8);opacity:1}100%{transform:scale(1.6);opacity:0}}
-.drone__tip{margin:6% -6.4% 0;background:var(--ink);color:#d8d2c8;padding:24px 28px;min-height:118px;display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.5;font-weight:300}
+.drone__hint{position:absolute;left:12px;bottom:12px;z-index:3;padding:7px 12px;border-radius:999px;background:var(--ink);color:var(--brass);pointer-events:none;animation:hintBob 2.4s ease-in-out infinite;transition:opacity .5s}
+.drone__hint::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--brass);margin-right:8px;vertical-align:1px;animation:blink 1.6s infinite}
+.drone.is-used .drone__hint{opacity:0}
+@keyframes hintBob{50%{transform:translateY(-4px)}}
+.drone__reset{position:absolute;top:12px;right:12px;z-index:3;padding:8px 14px;border-radius:999px;background:rgba(7,13,20,.85);color:#fff;transition:background .3s,color .3s,opacity .4s,transform .4s var(--ease)}
+.drone__reset:hover{background:var(--brass);color:var(--ink)}
+.drone__reset[hidden]{display:block;opacity:0;pointer-events:none;transform:translateY(-8px)}
+.drone__tip{margin:6% -6.4% 0;background:var(--ink);color:#d8d2c8;display:flex;flex-direction:column;font-size:15px;line-height:1.5;font-weight:300}
+.drone__body{padding:24px 28px 18px;min-height:150px;display:flex;flex-direction:column;gap:6px}
+.drone__body.is-swap{animation:tipIn .55s var(--ease)}
+@keyframes tipIn{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
 .drone__tip .mono{color:var(--brass)!important}
 .drone__tip b{font-family:var(--serif);font-weight:400;font-size:24px;color:#fff;line-height:1.1}
+.drone__chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.drone__chips i{font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border:1px solid rgba(201,169,110,.45);border-radius:999px;color:var(--brass-2)}
+.drone__ctrl{position:relative;display:flex;align-items:center;gap:10px;padding:12px 16px 14px 20px;border-top:1px solid rgba(236,230,220,.1)}
+.drone__arrow{width:40px;height:40px;border-radius:50%;border:1px solid var(--line-2);color:#fff;font-size:16px;display:grid;place-items:center;transition:background .3s,color .3s,border-color .3s}
+.drone__arrow:hover{background:var(--brass);border-color:var(--brass);color:var(--ink)}
+.drone__count{min-width:64px;text-align:center;color:#d8d2c8!important}
+.drone__count b{font-family:var(--mono);font-size:11px;color:var(--brass)}
+.drone__tour{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;border:1px solid var(--brass);color:var(--brass)!important;transition:background .3s,color .3s}
+.drone__tour:hover,.drone__tour[aria-pressed="true"]{background:var(--brass);color:var(--ink)!important}
+.drone__tour-ico{width:0;height:0;border-left:8px solid currentColor;border-top:5px solid transparent;border-bottom:5px solid transparent}
+.drone__tour[aria-pressed="true"] .drone__tour-ico{width:8px;height:10px;border:0;border-left:3px solid currentColor;border-right:3px solid currentColor}
+.drone__bar{position:absolute;left:0;right:0;top:-1px;height:2px;background:transparent}
+.drone__bar i{display:block;height:100%;width:0;background:var(--brass)}
+.drone__bar i.is-run{animation:tourBar var(--tour,4.5s) linear forwards}
+@keyframes tourBar{to{width:100%}}
 .falcon__lead{font-family:var(--serif);font-size:clamp(24px,2.2vw,32px);line-height:1.2;margin-bottom:22px;color:#1a1d21}
 .falcon__text>p:not(.falcon__lead){color:#4d5056;font-weight:400}
 .falcon__text>p+p{margin-top:14px}
@@ -498,7 +539,11 @@ em{font-style:italic;font-family:var(--serif);color:var(--brass);font-weight:400
   .row:hover{padding-left:0}
   .tasks{grid-template-columns:1fr}
   .task,.task:nth-child(even),.task:not(:nth-child(3n+1)){padding:26px 0;border-left:0}
-  .drone__tip{min-height:140px;padding:20px}
+  .drone__body{min-height:184px;padding:20px 20px 14px}
+  .drone__ctrl{padding:10px 12px 12px 14px;gap:6px}
+  .drone__tour{padding:9px 13px}
+  .drone__count{min-width:52px}
+  .drone__stage.is-zoomed{--zs:2.1}
   .hot{width:32px;height:32px;margin:-16px 0 0 -16px}
   .specs div:nth-child(even){padding-left:16px}
   .deck{min-height:560px}

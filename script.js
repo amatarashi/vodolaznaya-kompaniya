@@ -12,10 +12,10 @@
     unit: 'm',
     menuOpen: 'Open menu', menuClose: 'Close menu',
     hots: [
-      ['01 · Camera', 'High-definition camera', 'Colour camera on a tilt mechanism: the pilot angles it to examine the hull from any side.'],
-      ['02 · Lights', 'LED floodlights', 'On-board lighting gives a clear picture at depth, under the bottom and in murky water.'],
-      ['03 · Thrusters', 'Electric thrusters', 'Five thrusters let the pilot manoeuvre precisely along the hull and hold position at any spot.'],
-      ['04 · Frame', 'Buoyancy and protective frame', 'About one metre long: launched quickly from deck, rated to 300 m depth.']
+      ['01 · Camera', 'High-definition camera', 'Colour camera on a tilt mechanism: the pilot angles it to examine the hull from any side.', ['Tilt mechanism', 'Recorded for the report']],
+      ['02 · Lights', 'LED floodlights', 'On-board lighting gives a clear picture at depth, under the bottom and in murky water.', ['LED', 'Murky water', 'Under the bottom']],
+      ['03 · Thrusters', 'Electric thrusters', 'Five thrusters let the pilot manoeuvre precisely along the hull and hold position at any spot.', ['5 thrusters', 'Station keeping']],
+      ['04 · Frame', 'Buoyancy and protective frame', 'About one metre long: launched quickly from deck, rated to 300 m depth.', ['≈1 m', 'Up to 300 m']]
     ],
     mailSubject: 'Hull inspection request / Заявка на осмотр судна',
     mailTitle: 'Request from the FlotService website (English version)',
@@ -24,10 +24,10 @@
     unit: 'м',
     menuOpen: 'Открыть меню', menuClose: 'Закрыть меню',
     hots: [
-      ['01 · Камера', 'Камера высокого разрешения', 'Цветная камера на поворотном механизме: оператор наклоняет её и рассматривает корпус под нужным углом.'],
-      ['02 · Свет', 'Светодиодные прожекторы', 'Собственное освещение даёт чёткую картинку даже на глубине, под днищем и в мутной воде.'],
-      ['03 · Движение', 'Электрические движители', 'Пять движителей позволяют точно маневрировать вдоль борта и удерживать позицию у нужного участка.'],
-      ['04 · Корпус', 'Плавучесть и защитная рама', 'Лёгкий аппарат длиной около метра: быстро спускается с борта и работает на глубине до 300 м.']
+      ['01 · Камера', 'Камера высокого разрешения', 'Цветная камера на поворотном механизме: оператор наклоняет её и рассматривает корпус под нужным углом.', ['Поворотный механизм', 'Запись для акта']],
+      ['02 · Свет', 'Светодиодные прожекторы', 'Собственное освещение даёт чёткую картинку даже на глубине, под днищем и в мутной воде.', ['LED', 'Мутная вода', 'Под днищем']],
+      ['03 · Движение', 'Электрические движители', 'Пять движителей позволяют точно маневрировать вдоль борта и удерживать позицию у нужного участка.', ['5 движителей', 'Удержание позиции']],
+      ['04 · Корпус', 'Плавучесть и защитная рама', 'Лёгкий аппарат длиной около метра: быстро спускается с борта и работает на глубине до 300 м.', ['≈1 м', 'До 300 м']]
     ],
     mailSubject: 'Заявка на осмотр судна',
     mailTitle: 'Заявка с сайта ФлотСервис',
@@ -230,12 +230,116 @@
   }));
 
   /* ---------- Точки на дроне ---------- */
+  // Нажатие на точку приближает фото к детали и подсвечивает её «прожектором».
+  // Детали листаются стрелками, свайпом и клавишами ← →, есть автоматическая экскурсия.
+  const drone = $('#drone');
+  const stage = $('#droneStage');
   const tip = $('#droneTip');
-  $$('.hot').forEach(h => h.addEventListener('click', () => {
-    const [m, t, d] = T.hots[h.dataset.hot];
-    $$('.hot').forEach(x => x.classList.toggle('is-active', x === h));
-    tip.innerHTML = `<span class="mono">${m}</span><b>${t}</b><span>${d}</span>`;
-  }));
+  const hots = $$('.hot', stage);
+  const count = $('#droneCount');
+  const resetBtn = $('#droneReset');
+  const tourBtn = $('#droneTour');
+  const tourBar = $('#droneBar');
+  const introHTML = tip.innerHTML;
+  const TOUR_MS = 4500;
+  let current = -1;
+  let tourTimer = null;
+
+  function showPart(i) {
+    current = i;
+    hots.forEach((h, k) => {
+      const on = k === i;
+      h.classList.toggle('is-active', on);
+      h.setAttribute('aria-pressed', on);
+    });
+    if (i < 0) {
+      stage.classList.remove('is-zoomed');
+      stage.style.removeProperty('--zx');
+      stage.style.removeProperty('--zy');
+      tip.innerHTML = introHTML;
+      count.textContent = '00 / ' + pad2(hots.length);
+      resetBtn.hidden = true;
+    } else {
+      const h = hots[i];
+      stage.style.setProperty('--zx', h.style.getPropertyValue('--x'));
+      stage.style.setProperty('--zy', h.style.getPropertyValue('--y'));
+      stage.classList.add('is-zoomed');
+      const [m, t, d, chips] = T.hots[i];
+      tip.innerHTML = `<span class="mono">${m}</span><b>${t}</b><span>${d}</span>` +
+        `<span class="drone__chips">${chips.map(c => `<i>${c}</i>`).join('')}</span>`;
+      count.innerHTML = `<b>${pad2(i + 1)}</b> / ${pad2(hots.length)}`;
+      resetBtn.hidden = false;
+      drone.classList.add('is-used');
+    }
+    // перезапускаем анимацию появления текста
+    tip.classList.remove('is-swap');
+    void tip.offsetWidth;
+    tip.classList.add('is-swap');
+  }
+  const pad2 = n => String(n).padStart(2, '0');
+  const step = dir => showPart(current < 0 && dir < 0 ? hots.length - 1 : (current + dir + hots.length) % hots.length);
+
+  function runBar() {
+    tourBar.classList.remove('is-run');
+    void tourBar.offsetWidth;
+    tourBar.style.setProperty('--tour', TOUR_MS + 'ms');
+    tourBar.classList.add('is-run');
+  }
+  function stopTour() {
+    clearInterval(tourTimer);
+    tourTimer = null;
+    tourBtn.setAttribute('aria-pressed', 'false');
+    tourBar.classList.remove('is-run');
+  }
+  function startTour() {
+    tourBtn.setAttribute('aria-pressed', 'true');
+    step(1);
+    runBar();
+    tourTimer = setInterval(() => {
+      if (current === hots.length - 1) { stopTour(); showPart(-1); return; }
+      step(1);
+      runBar();
+    }, TOUR_MS);
+  }
+  // любое ручное действие останавливает экскурсию
+  const manual = fn => (...args) => { stopTour(); fn(...args); };
+
+  hots.forEach((h, i) => h.addEventListener('click', manual(e => {
+    e.stopPropagation();
+    showPart(current === i ? -1 : i);
+  })));
+  $('#dronePrev').addEventListener('click', manual(() => step(-1)));
+  $('#droneNext').addEventListener('click', manual(() => step(1)));
+  resetBtn.addEventListener('click', manual(() => showPart(-1)));
+  tourBtn.addEventListener('click', () => (tourTimer ? stopTour() : startTour()));
+  // нажатие на приближенное фото мимо точки — вернуться к общему виду
+  stage.addEventListener('click', manual(() => { if (current >= 0) showPart(-1); }));
+
+  // клавиши ← → и Esc, когда фокус внутри блока с дроном
+  drone.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); manual(() => step(1))(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); manual(() => step(-1))(); }
+    else if (e.key === 'Escape' && current >= 0) manual(() => showPart(-1))();
+  });
+
+  // страховка для старых браузеров без overflow:clip — рамка фото не должна прокручиваться
+  const frame = stage.parentElement;
+  frame.addEventListener('scroll', () => { frame.scrollLeft = 0; frame.scrollTop = 0; });
+
+  // свайп влево/вправо по фото на телефоне
+  let sx = 0, sy = 0;
+  stage.parentElement.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+  stage.parentElement.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) manual(() => step(dx < 0 ? 1 : -1))();
+  }, { passive: true });
+
+  // экскурсия ставится на паузу, если блок с дроном ушёл с экрана
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => { if (!e.isIntersecting && tourTimer) stopTour(); }).observe(drone);
+  }
+  showPart(-1);
+  tip.classList.remove('is-swap');
 
   /* ---------- Видео ---------- */
   const player = $('#player');

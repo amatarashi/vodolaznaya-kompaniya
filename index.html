@@ -228,18 +228,32 @@
     </header>
 
     <div class="falcon__grid">
-      <figure class="drone">
+      <figure class="drone" id="drone">
         <div class="drone__img">
-          <img src="assets/falcon.jpg" alt="Подводный дрон Saab Seaeye Falcon — жёлтый корпус, белая защитная рама, движители и прожекторы" width="660" height="371">
-          <button class="hot" style="left:66%;top:27%" data-hot="0" aria-label="Камера"><span>1</span></button>
-          <button class="hot" style="left:76%;top:58%" data-hot="1" aria-label="Прожекторы"><span>2</span></button>
-          <button class="hot" style="left:25%;top:46%" data-hot="2" aria-label="Движители"><span>3</span></button>
-          <button class="hot" style="left:40%;top:22%" data-hot="3" aria-label="Корпус"><span>4</span></button>
+          <div class="drone__stage" id="droneStage">
+            <img src="assets/falcon.jpg" alt="Подводный дрон Saab Seaeye Falcon — жёлтый корпус, белая защитная рама, движители и прожекторы" width="660" height="371">
+            <span class="drone__spot" aria-hidden="true"></span>
+            <button class="hot" style="--x:66%;--y:27%" data-hot="0" aria-label="Камера"><span>1</span></button>
+            <button class="hot" style="--x:76%;--y:58%" data-hot="1" aria-label="Прожекторы"><span>2</span></button>
+            <button class="hot" style="--x:25%;--y:46%" data-hot="2" aria-label="Движители"><span>3</span></button>
+            <button class="hot" style="--x:40%;--y:22%" data-hot="3" aria-label="Корпус и рама"><span>4</span></button>
+          </div>
+          <span class="drone__hint mono" id="droneHint" aria-hidden="true">Нажмите на точку</span>
+          <button class="drone__reset mono" id="droneReset" hidden>Общий вид <span aria-hidden="true">↺</span></button>
         </div>
-        <figcaption class="drone__tip" id="droneTip" aria-live="polite">
-          <span class="mono">Saab Seaeye Falcon</span>
-          <b>Нажмите на точки</b>
-          <span>— расскажем, из чего состоит аппарат.</span>
+        <figcaption class="drone__tip">
+          <div class="drone__body" id="droneTip" aria-live="polite">
+            <span class="mono">Saab Seaeye Falcon</span>
+            <b>Из чего состоит дрон</b>
+            <span>Нажмите на точку на фото, листайте стрелками или включите экскурсию.</span>
+          </div>
+          <div class="drone__ctrl">
+            <button class="drone__arrow" id="dronePrev" aria-label="Предыдущая деталь">←</button>
+            <span class="drone__count mono" id="droneCount">00 / 04</span>
+            <button class="drone__arrow" id="droneNext" aria-label="Следующая деталь">→</button>
+            <button class="drone__tour mono" id="droneTour" aria-pressed="false"><span class="drone__tour-ico" aria-hidden="true"></span><span class="drone__tour-txt">Экскурсия</span></button>
+            <span class="drone__bar" aria-hidden="true"><i id="droneBar"></i></span>
+          </div>
         </figcaption>
       </figure>
 

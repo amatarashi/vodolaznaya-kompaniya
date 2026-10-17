@@ -225,18 +225,32 @@
     </header>
 
     <div class="falcon__grid">
-      <figure class="drone">
+      <figure class="drone" id="drone">
         <div class="drone__img">
-          <img src="../assets/falcon.jpg" alt="Saab Seaeye Falcon underwater drone — yellow body, white protective frame, thrusters and floodlights" width="660" height="371">
-          <button class="hot" style="left:66%;top:27%" data-hot="0" aria-label="Camera"><span>1</span></button>
-          <button class="hot" style="left:76%;top:58%" data-hot="1" aria-label="Lights"><span>2</span></button>
-          <button class="hot" style="left:25%;top:46%" data-hot="2" aria-label="Thrusters"><span>3</span></button>
-          <button class="hot" style="left:40%;top:22%" data-hot="3" aria-label="Frame"><span>4</span></button>
+          <div class="drone__stage" id="droneStage">
+            <img src="../assets/falcon.jpg" alt="Saab Seaeye Falcon underwater drone — yellow body, white protective frame, thrusters and floodlights" width="660" height="371">
+            <span class="drone__spot" aria-hidden="true"></span>
+            <button class="hot" style="--x:66%;--y:27%" data-hot="0" aria-label="Camera"><span>1</span></button>
+            <button class="hot" style="--x:76%;--y:58%" data-hot="1" aria-label="Lights"><span>2</span></button>
+            <button class="hot" style="--x:25%;--y:46%" data-hot="2" aria-label="Thrusters"><span>3</span></button>
+            <button class="hot" style="--x:40%;--y:22%" data-hot="3" aria-label="Body and frame"><span>4</span></button>
+          </div>
+          <span class="drone__hint mono" id="droneHint" aria-hidden="true">Tap a dot</span>
+          <button class="drone__reset mono" id="droneReset" hidden>Full view <span aria-hidden="true">↺</span></button>
         </div>
-        <figcaption class="drone__tip" id="droneTip" aria-live="polite">
-          <span class="mono">Saab Seaeye Falcon</span>
-          <b>Tap the dots</b>
-          <span>— see what the vehicle is made of.</span>
+        <figcaption class="drone__tip">
+          <div class="drone__body" id="droneTip" aria-live="polite">
+            <span class="mono">Saab Seaeye Falcon</span>
+            <b>What the drone is made of</b>
+            <span>Tap a dot on the photo, use the arrows or start the tour.</span>
+          </div>
+          <div class="drone__ctrl">
+            <button class="drone__arrow" id="dronePrev" aria-label="Previous part">←</button>
+            <span class="drone__count mono" id="droneCount">00 / 04</span>
+            <button class="drone__arrow" id="droneNext" aria-label="Next part">→</button>
+            <button class="drone__tour mono" id="droneTour" aria-pressed="false"><span class="drone__tour-ico" aria-hidden="true"></span><span class="drone__tour-txt">Tour</span></button>
+            <span class="drone__bar" aria-hidden="true"><i id="droneBar"></i></span>
+          </div>
         </figcaption>
       </figure>
 
