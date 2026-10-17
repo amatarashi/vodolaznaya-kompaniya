@@ -66,10 +66,20 @@
 </header>
 
 <!-- ============ ГЛУБИНОМЕР ============ -->
-<aside class="gauge" aria-hidden="true">
-  <span class="gauge__value"><b data-depth>000</b> м</span>
-  <div class="gauge__track"><div class="gauge__fill" id="gaugeFill"></div></div>
-  <span class="gauge__section" id="gaugeSection">поверхность</span>
+<aside class="gauge" aria-label="Глубина погружения">
+  <div class="gauge__head">
+    <span class="mono gauge__cap">Глубина</span>
+    <b class="gauge__num"><span data-depth>000</span><small>м</small></b>
+    <span class="mono gauge__pa"><span id="gaugePa">1.0</span> атм</span>
+  </div>
+  <div class="gauge__scale">
+    <div class="gauge__ticks" aria-hidden="true"></div>
+    <span class="gauge__n" style="top:0.000%">0</span><span class="gauge__n" style="top:16.667%">50</span><span class="gauge__n" style="top:33.333%">100</span><span class="gauge__n" style="top:50.000%">150</span><span class="gauge__n" style="top:66.667%">200</span><span class="gauge__n" style="top:83.333%">250</span><span class="gauge__n" style="top:100.000%">300</span>
+    <div class="gauge__fill" aria-hidden="true"></div>
+    <div class="gauge__marks" id="gaugeMarks"></div>
+    <span class="gauge__ptr" aria-hidden="true"><i></i></span>
+  </div>
+  <span class="gauge__section mono" id="gaugeSection" aria-hidden="true">поверхность</span>
 </aside>
 
 <main id="main">
@@ -220,7 +230,8 @@
 </section>
 
 <!-- ============ ДРОН FALCON (светлая секция) ============ -->
-<section class="section light falcon" id="falcon" data-zone="дрон falcon">
+<section class="section falcon" id="falcon" data-zone="дрон falcon">
+  <div class="falcon__bg" aria-hidden="true"><span class="falcon__sweep"></span></div>
   <div class="wrap">
     <header class="shead">
       <p class="shead__num mono"><span class="depth-tag">— 0 м</span> Новое направление</p>
@@ -229,27 +240,44 @@
 
     <div class="falcon__grid">
       <figure class="drone" id="drone">
-        <div class="drone__img">
-          <div class="drone__stage" id="droneStage">
-            <img src="assets/falcon.jpg" alt="Подводный дрон Saab Seaeye Falcon — жёлтый корпус, белая защитная рама, движители и прожекторы" width="660" height="371">
-            <span class="drone__spot" aria-hidden="true"></span>
-            <button class="hot" style="--x:66%;--y:27%" data-hot="0" aria-label="Камера"><span>1</span></button>
-            <button class="hot" style="--x:76%;--y:58%" data-hot="1" aria-label="Прожекторы"><span>2</span></button>
-            <button class="hot" style="--x:25%;--y:46%" data-hot="2" aria-label="Движители"><span>3</span></button>
-            <button class="hot" style="--x:40%;--y:22%" data-hot="3" aria-label="Корпус и рама"><span>4</span></button>
+        <div class="drone__modes" role="radiogroup" aria-label="Режим изображения">
+          <button class="drone__mode is-active" data-mode="photo" role="radio" aria-checked="true">Фото</button>
+          <button class="drone__mode" data-mode="sonar" role="radio" aria-checked="false">Сонар</button>
+          <button class="drone__mode" data-mode="blueprint" role="radio" aria-checked="false">Чертёж</button>
+        </div>
+        <div class="drone__monitor" id="droneMonitor">
+          <div class="drone__img">
+            <div class="drone__stage" id="droneStage" data-mode="photo">
+              <img src="assets/falcon-detail.webp" srcset="assets/falcon-detail-1024.webp 1024w, assets/falcon-detail.webp 1536w" sizes="(max-width: 1080px) 100vw, 60vw" alt="Подводный дрон Saab Seaeye Falcon крупным планом: движитель в кольцевой насадке, светодиодный прожектор, камера, жёлтые блоки плавучести и белая рама" width="1536" height="1024">
+              <span class="drone__tint" aria-hidden="true"></span>
+              <span class="drone__spot" aria-hidden="true"></span>
+              <button class="hot" style="--x:42%;--y:6%" data-hot="0" aria-label="Камера"><span>1</span></button>
+              <button class="hot" style="--x:77%;--y:46%" data-hot="1" aria-label="Прожектор"><span>2</span></button>
+              <button class="hot" style="--x:47%;--y:51%" data-hot="2" aria-label="Движитель"><span>3</span></button>
+              <button class="hot" style="--x:14%;--y:10%" data-hot="3" aria-label="Блок плавучести"><span>4</span></button>
+              <button class="hot" style="--x:84%;--y:70%" data-hot="4" aria-label="Рама"><span>5</span></button>
+            </div>
+            <div class="hud" aria-hidden="true">
+              <span class="hud__c hud__c--tl"></span><span class="hud__c hud__c--tr"></span><span class="hud__c hud__c--bl"></span><span class="hud__c hud__c--br"></span>
+              <span class="hud__tl mono"><i class="hud__rec"></i>CAM 1 · <b id="hudMode">PHOTO</b></span>
+              <span class="hud__tr mono" id="hudClock">00:00:00</span>
+              <span class="hud__bl mono">ZOOM <b id="hudZoom">1.0×</b></span>
+              <span class="hud__br mono">TARGET <b id="hudTarget">—</b></span>
+              <span class="hud__scan"></span>
+            </div>
+            <span class="drone__hint mono" id="droneHint" aria-hidden="true">Нажмите на точку</span>
+            <button class="drone__reset mono" id="droneReset" hidden>Общий вид <span aria-hidden="true">↺</span></button>
           </div>
-          <span class="drone__hint mono" id="droneHint" aria-hidden="true">Нажмите на точку</span>
-          <button class="drone__reset mono" id="droneReset" hidden>Общий вид <span aria-hidden="true">↺</span></button>
         </div>
         <figcaption class="drone__tip">
           <div class="drone__body" id="droneTip" aria-live="polite">
             <span class="mono">Saab Seaeye Falcon</span>
             <b>Из чего состоит дрон</b>
-            <span>Нажмите на точку на фото, листайте стрелками или включите экскурсию.</span>
+            <span>Нажмите на точку, листайте стрелками или включите экскурсию. Попробуйте режимы «Сонар» и «Чертёж».</span>
           </div>
           <div class="drone__ctrl">
             <button class="drone__arrow" id="dronePrev" aria-label="Предыдущая деталь">←</button>
-            <span class="drone__count mono" id="droneCount">00 / 04</span>
+            <span class="drone__count mono" id="droneCount">00 / 05</span>
             <button class="drone__arrow" id="droneNext" aria-label="Следующая деталь">→</button>
             <button class="drone__tour mono" id="droneTour" aria-pressed="false"><span class="drone__tour-ico" aria-hidden="true"></span><span class="drone__tour-txt">Экскурсия</span></button>
             <span class="drone__bar" aria-hidden="true"><i id="droneBar"></i></span>
@@ -262,23 +290,27 @@
         <p>Оператор управляет дроном с&nbsp;палубы: ведёт его вдоль корпуса, останавливает у&nbsp;нужного участка и&nbsp;записывает видео для акта. Вы или ваш капитан можете смотреть трансляцию рядом с&nbsp;оператором и&nbsp;сразу попросить показать любой участок ближе.</p>
         <p>Дрон лёгкий и&nbsp;быстро спускается с&nbsp;борта, поэтому осмотр укладывается в&nbsp;стоянку и&nbsp;не&nbsp;задерживает судно. Там, где спуск водолаза затруднён, первым идёт дрон, и&nbsp;люди не&nbsp;рискуют без необходимости.</p>
         <p class="falcon__model">Аппарат — Saab Seaeye Falcon, профессиональный телеуправляемый подводный аппарат (ТНПА).</p>
-        <dl class="specs">
-          <div><dt class="mono">Рабочая глубина</dt><dd>300<small>м</small></dd></div>
-          <div><dt class="mono">Длина аппарата</dt><dd>≈1<small>м</small></dd></div>
-          <div><dt class="mono">Движители</dt><dd>5</dd></div>
-          <div><dt class="mono">Видео на борт</dt><dd><em>live</em></dd></div>
-        </dl>
+        <dl class="specs"><div><dt class="mono">Рабочая глубина</dt><dd>300<small>м</small></dd></div><div><dt class="mono">Длина аппарата</dt><dd>≈1<small>м</small></dd></div><div><dt class="mono">Движители</dt><dd>5</dd></div><div><dt class="mono">Видео на борт</dt><dd><em>live</em></dd></div></dl>
       </div>
     </div>
+  </div>
+</section>
 
-    <h3 class="h3">Что дрон делает для вас</h3>
+<!-- ============ ЧТО ДРОН ДЕЛАЕТ ДЛЯ ВАС ============ -->
+<section class="section tasks-sec" id="tasks" data-zone="задачи дрона">
+  <div class="tasks-sec__bg" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="wrap">
+    <header class="shead">
+      <p class="shead__num mono"><span class="depth-tag">— 0 м</span> Польза</p>
+      <h2 class="h2">Что дрон <em>делает для вас</em></h2>
+    </header>
     <div class="tasks">
-      <div class="task"><span class="mono">01</span><h4>Осмотр корпуса и днища</h4><p>Проходит вдоль борта и&nbsp;под днищем, передавая картинку оператору без пауз.</p></div>
-      <div class="task"><span class="mono">02</span><h4>Винто-рулевой комплекс</h4><p>Подробно снимает винт, руль, кингстонные решётки и&nbsp;другие сложные участки.</p></div>
-      <div class="task"><span class="mono">03</span><h4>Поиск посторонних предметов</h4><p>Собственный свет даёт детальную картинку даже на&nbsp;глубине и&nbsp;в&nbsp;мутной воде.</p></div>
-      <div class="task"><span class="mono">04</span><h4>Удержание позиции</h4><p>Зависает у&nbsp;подозрительного участка, чтобы рассмотреть и&nbsp;записать его без спешки.</p></div>
-      <div class="task"><span class="mono">05</span><h4>Там, где водолазу сложно</h4><p>Предварительный обзор и&nbsp;труднодоступные места, где спуск человека затруднён.</p></div>
-      <div class="task"><span class="mono">06</span><h4>Вместе с водолазами</h4><p>Совмещаем с&nbsp;водолазным осмотром в&nbsp;одном выезде — быстрее и&nbsp;надёжнее.</p></div>
+      <article class="task"><span class="task__ico"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M4 30h40l-6 9H10z"/><path d="M12 30V20h20v10M34 30V14h6v16"/><path d="M2 44c4 0 4-2 8-2s4 2 8 2 4-2 8-2 4 2 8 2 4-2 8-2"/></svg></span><span class="task__n mono">01</span><h3>Осмотр корпуса и днища</h3><p>Проходит вдоль борта и&nbsp;под днищем, передавая картинку оператору без пауз.</p></article>
+      <article class="task"><span class="task__ico"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="4"/><path d="M24 20c-2-8 2-14 6-14s4 8-6 14zM28 24c8-2 14 2 14 6s-8 4-14-6zM24 28c2 8-2 14-6 14s-4-8 6-14zM20 24c-8 2-14-2-14-6s8-4 14 6z"/></svg></span><span class="task__n mono">02</span><h3>Винто-рулевой комплекс</h3><p>Подробно снимает винт, руль, кингстонные решётки и&nbsp;другие сложные участки.</p></article>
+      <article class="task"><span class="task__ico"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="21" cy="21" r="12"/><path d="M30 30l12 12"/><path d="M15 21h12M21 15v12"/></svg></span><span class="task__n mono">03</span><h3>Поиск посторонних предметов</h3><p>Собственный свет даёт детальную картинку даже на&nbsp;глубине и&nbsp;в&nbsp;мутной воде.</p></article>
+      <article class="task"><span class="task__ico"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="16"/><circle cx="24" cy="24" r="6"/><path d="M24 2v8M24 38v8M2 24h8M38 24h8"/></svg></span><span class="task__n mono">04</span><h3>Удержание позиции</h3><p>Зависает у&nbsp;подозрительного участка, чтобы рассмотреть и&nbsp;записать его без спешки.</p></article>
+      <article class="task"><span class="task__ico"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4l20 36H4z"/><path d="M24 18v10M24 33v2"/></svg></span><span class="task__n mono">05</span><h3>Там, где водолазу сложно</h3><p>Предварительный обзор и&nbsp;труднодоступные места, где спуск человека затруднён.</p></article>
+      <article class="task"><span class="task__ico"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="16" cy="16" r="6"/><path d="M6 36c0-6 4-10 10-10s10 4 10 10"/><rect x="28" y="22" width="16" height="10" rx="2"/><path d="M32 32v4M40 32v4M26 26h2"/></svg></span><span class="task__n mono">06</span><h3>Вместе с водолазами</h3><p>Совмещаем с&nbsp;водолазным осмотром в&nbsp;одном выезде — быстрее и&nbsp;надёжнее.</p></article>
     </div>
   </div>
 </section>
@@ -371,21 +403,41 @@
 </section>
 
 <!-- ============ КЛИЕНТЫ (светлая секция) ============ -->
-<section class="section light" id="clients" data-zone="клиенты">
+<section class="section clients" id="clients" data-zone="клиенты">
+  <div class="clients__bg" aria-hidden="true"></div>
   <div class="wrap">
     <header class="shead">
       <p class="shead__num mono"><span class="depth-tag">— 0 м</span> Рекомендации</p>
       <h2 class="h2">Нам доверяют <em>крупнейшие</em></h2>
     </header>
     <div class="majors">
-      <div class="major"><span class="mono">Рекомендательное письмо</span><b>ПАО «Газпром Нефть»</b><p>Подтверждает высокий уровень исполнения работ, надёжность и&nbsp;соответствие стандартам безопасности крупнейших нефтегазовых проектов.</p></div>
-      <div class="major"><span class="mono">Рекомендательное письмо</span><b>ПАО «Роснефть»</b><p>Положительная рекомендация от&nbsp;одной из&nbsp;крупнейших нефтяных компаний страны.</p></div>
+      <article class="letter">
+        <div class="letter__seal"><svg class="seal" viewBox="0 0 140 140" aria-hidden="true">
+            <defs><path id="seal0" d="M70,70 m-54,0 a54,54 0 1,1 108,0 a54,54 0 1,1 -108,0"/></defs>
+            <g class="seal__ring"><text><textPath href="#seal0" textLength="336">РЕКОМЕНДАТЕЛЬНОЕ ПИСЬМО ✦ ФЛОТСЕРВИС ✦ РЕКОМЕНДАТЕЛЬНОЕ ПИСЬМО ✦ ФЛОТСЕРВИС ✦ </textPath></text></g>
+            <circle cx="70" cy="70" r="38"/><circle cx="70" cy="70" r="31"/>
+            <path d="M70 44v52M44 70h52"/><circle cx="70" cy="70" r="9"/>
+          </svg></div>
+        <span class="mono letter__kind">Рекомендательное письмо</span>
+        <b>ПАО «Газпром Нефть»</b>
+        <p>Подтверждает высокий уровень исполнения работ, надёжность и&nbsp;соответствие стандартам безопасности крупнейших нефтегазовых проектов.</p>
+        <span class="letter__foot mono"><span>№ 01</span><span>Нефтегазовая отрасль</span></span>
+      </article>
+      <article class="letter">
+        <div class="letter__seal"><svg class="seal" viewBox="0 0 140 140" aria-hidden="true">
+            <defs><path id="seal1" d="M70,70 m-54,0 a54,54 0 1,1 108,0 a54,54 0 1,1 -108,0"/></defs>
+            <g class="seal__ring"><text><textPath href="#seal1" textLength="336">РЕКОМЕНДАТЕЛЬНОЕ ПИСЬМО ✦ ФЛОТСЕРВИС ✦ РЕКОМЕНДАТЕЛЬНОЕ ПИСЬМО ✦ ФЛОТСЕРВИС ✦ </textPath></text></g>
+            <circle cx="70" cy="70" r="38"/><circle cx="70" cy="70" r="31"/>
+            <path d="M70 44v52M44 70h52"/><circle cx="70" cy="70" r="9"/>
+          </svg></div>
+        <span class="mono letter__kind">Рекомендательное письмо</span>
+        <b>ПАО «Роснефть»</b>
+        <p>Положительная рекомендация от&nbsp;одной из&nbsp;крупнейших нефтяных компаний страны.</p>
+        <span class="letter__foot mono"><span>№ 02</span><span>Нефтегазовая отрасль</span></span>
+      </article>
     </div>
-    <ul class="logos">
-      <li>АО «Белфрахт»</li><li>ООО «Инфотек Балтика»</li><li>РК «Андер»</li><li>РК им.&nbsp;М.И.&nbsp;Калинина</li>
-      <li>ООО «Саами»</li><li>ООО «Мурманфишпродактс»</li><li>ООО «Южный Флот»</li><li>ООО «Инвест Флот»</li>
-      <li>White Agate Marine SPC</li><li>Serpentine Marine SPC</li><li>ООО «Первые горизонты»</li><li>ООО «Идас»</li>
-    </ul>
+    <div class="clients__stats"><div><b>14</b><span>компаний рекомендуют нас</span></div><div><b>2</b><span>крупнейшие нефтяные компании страны</span></div><div><b>5</b><span>портов от&nbsp;Баренцева до&nbsp;Японского моря</span></div></div>
+    <ul class="logos"><li><i class="mono">01</i><span>АО «Белфрахт»</span></li><li><i class="mono">02</i><span>ООО «Инфотек Балтика»</span></li><li><i class="mono">03</i><span>РК «Андер»</span></li><li><i class="mono">04</i><span>РК им.&nbsp;М.И.&nbsp;Калинина</span></li><li><i class="mono">05</i><span>ООО «Саами»</span></li><li><i class="mono">06</i><span>ООО «Мурманфишпродактс»</span></li><li><i class="mono">07</i><span>ООО «Южный Флот»</span></li><li><i class="mono">08</i><span>ООО «Инвест Флот»</span></li><li><i class="mono">09</i><span>White Agate Marine SPC</span></li><li><i class="mono">10</i><span>Serpentine Marine SPC</span></li><li><i class="mono">11</i><span>ООО «Первые горизонты»</span></li><li><i class="mono">12</i><span>ООО «Идас»</span></li></ul>
   </div>
 </section>
 
@@ -410,51 +462,83 @@
 
 <!-- ============ ЗАЯВКА ============ -->
 <section class="section contact" id="contact" data-zone="дно · 300 м">
+  <div class="contact__bg" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="wrap contact__in">
     <div class="contact__l">
       <p class="shead__num mono"><span class="depth-tag depth-tag--fixed">— 300 м</span> Заявка</p>
-      <h2 class="h2 h2--xl">Вы достигли дна.<br><em>Поговорим о&nbsp;вашем судне.</em></h2>
-      <p class="muted">Заполните форму — перезвоним в&nbsp;рабочее время и&nbsp;предложим формат осмотра. Или свяжитесь напрямую:</p>
-      <ul class="contacts">
-        <li><span class="mono">Телефон</span><a href="tel:+79113124949">+7 (911) 312-49-49</a></li>
-        <li><span class="mono">Телефон</span><a href="tel:+79215129758">+7 (921) 512-97-58</a></li>
-        <li><span class="mono">Почта</span><a href="mailto:flotservicecompany@mail.ru">flotservicecompany@mail.ru</a></li>
-      </ul>
+      <h2 class="h2 h2--xl">Вы достигли дна.<br><em>Рассчитаем осмотр за&nbsp;минуту.</em></h2>
+      <p class="muted">Ответьте на&nbsp;четыре вопроса — перезвоним в&nbsp;рабочее время и&nbsp;предложим формат и&nbsp;стоимость. Или свяжитесь напрямую:</p>
+      <ul class="contacts"><li><span class="mono">Телефон</span><a href="tel:+79113124949">+7 (911) 312-49-49</a></li><li><span class="mono">Телефон</span><a href="tel:+79215129758">+7 (921) 512-97-58</a></li><li><span class="mono">Почта</span><a href="mailto:flotservicecompany@mail.ru">flotservicecompany@mail.ru</a></li></ul>
       <p class="muted small">Генеральный директор — Р.Ю.&nbsp;Томских</p>
     </div>
 
-    <form class="form" id="form" novalidate>
+    <form class="form quiz" id="form" novalidate>
       <label class="hp" aria-hidden="true">Не заполняйте это поле<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
-      <div class="form__row">
-        <label class="field"><input name="name" autocomplete="name" placeholder=" "><span>Ваше имя</span></label>
-        <label class="field"><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder=" " required><span>Телефон *</span></label>
+      <div class="quiz__top">
+        <div class="quiz__progress">
+          <span class="mono quiz__label">Шаг <b id="quizNum">1</b> / 4</span>
+          <span class="quiz__bar"><i id="quizBar"></i></span>
+          <span class="mono quiz__depth" id="quizDepth">— 75 м</span>
+        </div>
+        <div class="quiz__summary" id="quizSummary" aria-live="polite" data-empty="Ваш запрос появится здесь"></div>
       </div>
-      <div class="form__row">
-        <label class="field"><input name="company" autocomplete="organization" placeholder=" "><span>Компания</span></label>
-        <label class="field"><input name="vessel" placeholder=" "><span>Название судна</span></label>
-      </div>
-      <div class="form__row">
-        <label class="field field--select"><select name="length"><option>Не знаю</option><option>до 100 м</option><option>до 150 м</option><option>до 180 м</option><option>до 200 м</option><option>свыше 200 м</option></select><span>Длина судна</span></label>
-        <label class="field field--select"><select name="port"><option>Мурманск и область</option><option>Санкт-Петербург</option><option>Усть-Луга</option><option>Приморск</option><option>Находка</option><option>Другой</option></select><span>Порт</span></label>
-      </div>
-      <fieldset class="chips">
-        <legend class="mono">Формат</legend>
-        <label><input type="radio" name="format" value="Водолаз" checked><span>Водолаз</span></label>
-        <label><input type="radio" name="format" value="Дрон Falcon"><span>Дрон Falcon</span></label>
-        <label><input type="radio" name="format" value="Водолаз + дрон"><span>Вместе</span></label>
-        <label><input type="radio" name="format" value="Подскажите"><span>Подскажите</span></label>
+
+      <fieldset class="quiz__step is-active" data-step="1">
+        <legend class="quiz__q">Какое у вас судно?</legend>
+        <div class="ship-meter">
+          <div class="ship-meter__sea" aria-hidden="true"><svg class="ship-meter__ship" viewBox="0 0 120 40"><use href="#ship"/></svg></div>
+          <output class="ship-meter__val" id="lenVal" for="lenRange">Не знаю</output>
+        </div>
+        <input class="ship-meter__range" type="range" min="0" max="5" step="1" value="0" id="lenRange" aria-label="Длина судна" data-labels="Не знаю|до 100 м|до 150 м|до 180 м|до 200 м|свыше 200 м">
+        <div class="ship-meter__ticks mono" aria-hidden="true"><span>?</span><span>100</span><span>150</span><span>180</span><span>200</span><span>200+</span></div>
+        <input type="hidden" name="length" id="lenInput" value="Не знаю">
+        <label class="field"><input name="vessel" placeholder=" "><span>Название судна, если знаете</span></label>
+        <div class="quiz__nav"><button type="button" class="btn btn--brass quiz__next">Далее <span class="arr" aria-hidden="true">→</span></button></div>
       </fieldset>
-      <label class="field"><textarea name="comment" rows="2" placeholder=" "></textarea><span>Комментарий — например, судно на якоре, нужен акт</span></label>
-      <label class="agree" id="agreeLabel">
-        <input type="checkbox" name="agree" required>
-        <span class="agree__box" aria-hidden="true"></span>
-        <span>Я&nbsp;даю <a href="consent.html" target="_blank" rel="noopener">согласие на&nbsp;обработку персональных данных</a> и&nbsp;ознакомлен(а) с&nbsp;<a href="privacy.html" target="_blank" rel="noopener">политикой конфиденциальности</a></span>
-      </label>
-      <button class="btn btn--brass btn--full magnetic" type="submit">Получить расчёт <span class="arr" aria-hidden="true">→</span></button>
-      <div class="form__ok" id="formOk" hidden>
-        <b>Спасибо. Заявка сформирована.</b>
-        <p>Откроется почтовая программа с&nbsp;готовым письмом — нажмите «Отправить». Если не&nbsp;открылась, позвоните: <a href="tel:+79113124949">+7 (911) 312-49-49</a>.</p>
-      </div>
+
+      <fieldset class="quiz__step" data-step="2">
+        <legend class="quiz__q">Где стоит судно?</legend>
+        <div class="opts opts--ports">
+          <label class="opt opt--port"><input type="radio" name="port" value="Мурманск и область"><span><b>Мурманск и область</b><i class="mono">68°58′ N</i></span></label>
+          <label class="opt opt--port"><input type="radio" name="port" value="Санкт-Петербург"><span><b>Санкт-Петербург</b><i class="mono">59°56′ N</i></span></label>
+          <label class="opt opt--port"><input type="radio" name="port" value="Усть-Луга"><span><b>Усть-Луга</b><i class="mono">59°40′ N</i></span></label>
+          <label class="opt opt--port"><input type="radio" name="port" value="Приморск"><span><b>Приморск</b><i class="mono">60°21′ N</i></span></label>
+          <label class="opt opt--port"><input type="radio" name="port" value="Находка"><span><b>Находка</b><i class="mono">42°49′ N</i></span></label>
+          <label class="opt opt--port"><input type="radio" name="port" value="Другой"><span><b>Другой</b><i class="mono">по запросу</i></span></label>
+        </div>
+        <div class="quiz__nav"><button type="button" class="btn btn--line quiz__back">← Назад</button><button type="button" class="btn btn--brass quiz__next">Далее <span class="arr" aria-hidden="true">→</span></button></div>
+      </fieldset>
+
+      <fieldset class="quiz__step" data-step="3">
+        <legend class="quiz__q">Как осматриваем?</legend>
+        <div class="opts opts--formats">
+          <label class="opt opt--format"><input type="radio" name="format" value="Водолаз" checked><span><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="14" r="8"/><path d="M16 14h16"/><path d="M12 42c2-9 6-13 12-13s10 4 12 13"/><path d="M34 8c4 2 6 6 6 10"/></svg><b>Водолаз</b><small>Ручной осмотр аттестованным водолазом</small></span></label>
+          <label class="opt opt--format"><input type="radio" name="format" value="Дрон Falcon"><span><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="14" width="32" height="18" rx="4"/><circle cx="30" cy="23" r="5"/><path d="M8 19H4M8 27H4M40 19h4M40 27h4M15 32v6M33 32v6"/></svg><b>Дрон Falcon</b><small>Видео на&nbsp;монитор на&nbsp;борту</small></span></label>
+          <label class="opt opt--format"><input type="radio" name="format" value="Водолаз + дрон"><span><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="14" cy="14" r="6"/><path d="M6 32c1-6 4-9 8-9s7 3 8 9"/><rect x="26" y="18" width="18" height="12" rx="3"/><circle cx="38" cy="24" r="3"/></svg><b>Вместе</b><small>Самый полный осмотр за&nbsp;один выезд</small></span></label>
+          <label class="opt opt--format"><input type="radio" name="format" value="Подскажите"><span><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18"/><path d="M18 19a6 6 0 1 1 8 5.6c-1.4.6-2 1.6-2 3V30M24 35v1"/></svg><b>Подскажите</b><small>Подберём формат под задачу</small></span></label>
+        </div>
+        <div class="quiz__nav"><button type="button" class="btn btn--line quiz__back">← Назад</button><button type="button" class="btn btn--brass quiz__next">Далее <span class="arr" aria-hidden="true">→</span></button></div>
+      </fieldset>
+
+      <fieldset class="quiz__step" data-step="4">
+        <legend class="quiz__q">Куда прислать расчёт?</legend>
+        <div class="form__row">
+          <label class="field"><input name="name" autocomplete="name" placeholder=" "><span>Ваше имя</span></label>
+          <label class="field"><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder=" " required><span>Телефон *</span></label>
+        </div>
+        <label class="field"><input name="company" autocomplete="organization" placeholder=" "><span>Компания</span></label>
+        <label class="field"><textarea name="comment" rows="2" placeholder=" "></textarea><span>Комментарий — например, судно на якоре, нужен акт</span></label>
+        <label class="agree" id="agreeLabel">
+          <input type="checkbox" name="agree" required>
+          <span class="agree__box" aria-hidden="true"></span>
+          <span>Я&nbsp;даю <a href="consent.html" target="_blank" rel="noopener">согласие на&nbsp;обработку персональных данных</a> и&nbsp;ознакомлен(а) с&nbsp;<a href="privacy.html" target="_blank" rel="noopener">политикой конфиденциальности</a></span>
+        </label>
+        <div class="quiz__nav">
+          <button type="button" class="btn btn--line quiz__back">← Назад</button>
+          <button class="btn btn--brass magnetic" type="submit">Получить расчёт <span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <div class="form__ok" id="formOk" hidden></div>
+      </fieldset>
     </form>
   </div>
 </section>

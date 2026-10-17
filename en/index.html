@@ -64,10 +64,20 @@
   </div>
 </header>
 
-<aside class="gauge" aria-hidden="true">
-  <span class="gauge__value"><b data-depth>000</b> m</span>
-  <div class="gauge__track"><div class="gauge__fill" id="gaugeFill"></div></div>
-  <span class="gauge__section" id="gaugeSection">surface</span>
+<aside class="gauge" aria-label="Dive depth">
+  <div class="gauge__head">
+    <span class="mono gauge__cap">Depth</span>
+    <b class="gauge__num"><span data-depth>000</span><small>m</small></b>
+    <span class="mono gauge__pa"><span id="gaugePa">1.0</span> atm</span>
+  </div>
+  <div class="gauge__scale">
+    <div class="gauge__ticks" aria-hidden="true"></div>
+    <span class="gauge__n" style="top:0.000%">0</span><span class="gauge__n" style="top:16.667%">50</span><span class="gauge__n" style="top:33.333%">100</span><span class="gauge__n" style="top:50.000%">150</span><span class="gauge__n" style="top:66.667%">200</span><span class="gauge__n" style="top:83.333%">250</span><span class="gauge__n" style="top:100.000%">300</span>
+    <div class="gauge__fill" aria-hidden="true"></div>
+    <div class="gauge__marks" id="gaugeMarks"></div>
+    <span class="gauge__ptr" aria-hidden="true"><i></i></span>
+  </div>
+  <span class="gauge__section mono" id="gaugeSection" aria-hidden="true">surface</span>
 </aside>
 
 <main id="main">
@@ -126,7 +136,7 @@
 </section>
 
 <!-- ============ WHO WE WORK FOR ============ -->
-<section class="section" id="who" data-zone="clients">
+<section class="section" id="who" data-zone="who we serve">
   <div class="wrap">
     <header class="shead">
       <p class="shead__num mono"><span class="depth-tag">— 0 m</span> Who we work for</p>
@@ -217,7 +227,8 @@
 </section>
 
 <!-- ============ FALCON ============ -->
-<section class="section light falcon" id="falcon" data-zone="falcon rov">
+<section class="section falcon" id="falcon" data-zone="falcon rov">
+  <div class="falcon__bg" aria-hidden="true"><span class="falcon__sweep"></span></div>
   <div class="wrap">
     <header class="shead">
       <p class="shead__num mono"><span class="depth-tag">— 0 m</span> New service</p>
@@ -226,27 +237,44 @@
 
     <div class="falcon__grid">
       <figure class="drone" id="drone">
-        <div class="drone__img">
-          <div class="drone__stage" id="droneStage">
-            <img src="../assets/falcon.jpg" alt="Saab Seaeye Falcon underwater drone — yellow body, white protective frame, thrusters and floodlights" width="660" height="371">
-            <span class="drone__spot" aria-hidden="true"></span>
-            <button class="hot" style="--x:66%;--y:27%" data-hot="0" aria-label="Camera"><span>1</span></button>
-            <button class="hot" style="--x:76%;--y:58%" data-hot="1" aria-label="Lights"><span>2</span></button>
-            <button class="hot" style="--x:25%;--y:46%" data-hot="2" aria-label="Thrusters"><span>3</span></button>
-            <button class="hot" style="--x:40%;--y:22%" data-hot="3" aria-label="Body and frame"><span>4</span></button>
+        <div class="drone__modes" role="radiogroup" aria-label="Image mode">
+          <button class="drone__mode is-active" data-mode="photo" role="radio" aria-checked="true">Photo</button>
+          <button class="drone__mode" data-mode="sonar" role="radio" aria-checked="false">Sonar</button>
+          <button class="drone__mode" data-mode="blueprint" role="radio" aria-checked="false">Blueprint</button>
+        </div>
+        <div class="drone__monitor" id="droneMonitor">
+          <div class="drone__img">
+            <div class="drone__stage" id="droneStage" data-mode="photo">
+              <img src="../assets/falcon-detail.webp" srcset="../assets/falcon-detail-1024.webp 1024w, ../assets/falcon-detail.webp 1536w" sizes="(max-width: 1080px) 100vw, 60vw" alt="Close-up of the Saab Seaeye Falcon underwater drone: ducted thruster, LED floodlight, camera, yellow buoyancy blocks and white frame" width="1536" height="1024">
+              <span class="drone__tint" aria-hidden="true"></span>
+              <span class="drone__spot" aria-hidden="true"></span>
+              <button class="hot" style="--x:42%;--y:6%" data-hot="0" aria-label="Camera"><span>1</span></button>
+              <button class="hot" style="--x:77%;--y:46%" data-hot="1" aria-label="Floodlight"><span>2</span></button>
+              <button class="hot" style="--x:47%;--y:51%" data-hot="2" aria-label="Thruster"><span>3</span></button>
+              <button class="hot" style="--x:14%;--y:10%" data-hot="3" aria-label="Buoyancy block"><span>4</span></button>
+              <button class="hot" style="--x:84%;--y:70%" data-hot="4" aria-label="Frame"><span>5</span></button>
+            </div>
+            <div class="hud" aria-hidden="true">
+              <span class="hud__c hud__c--tl"></span><span class="hud__c hud__c--tr"></span><span class="hud__c hud__c--bl"></span><span class="hud__c hud__c--br"></span>
+              <span class="hud__tl mono"><i class="hud__rec"></i>CAM 1 · <b id="hudMode">PHOTO</b></span>
+              <span class="hud__tr mono" id="hudClock">00:00:00</span>
+              <span class="hud__bl mono">ZOOM <b id="hudZoom">1.0×</b></span>
+              <span class="hud__br mono">TARGET <b id="hudTarget">—</b></span>
+              <span class="hud__scan"></span>
+            </div>
+            <span class="drone__hint mono" id="droneHint" aria-hidden="true">Tap a dot</span>
+            <button class="drone__reset mono" id="droneReset" hidden>Full view <span aria-hidden="true">↺</span></button>
           </div>
-          <span class="drone__hint mono" id="droneHint" aria-hidden="true">Tap a dot</span>
-          <button class="drone__reset mono" id="droneReset" hidden>Full view <span aria-hidden="true">↺</span></button>
         </div>
         <figcaption class="drone__tip">
           <div class="drone__body" id="droneTip" aria-live="polite">
             <span class="mono">Saab Seaeye Falcon</span>
             <b>What the drone is made of</b>
-            <span>Tap a dot on the photo, use the arrows or start the tour.</span>
+            <span>Tap a dot, use the arrows or start the tour. Try the “Sonar” and “Blueprint” modes.</span>
           </div>
           <div class="drone__ctrl">
             <button class="drone__arrow" id="dronePrev" aria-label="Previous part">←</button>
-            <span class="drone__count mono" id="droneCount">00 / 04</span>
+            <span class="drone__count mono" id="droneCount">00 / 05</span>
             <button class="drone__arrow" id="droneNext" aria-label="Next part">→</button>
             <button class="drone__tour mono" id="droneTour" aria-pressed="false"><span class="drone__tour-ico" aria-hidden="true"></span><span class="drone__tour-txt">Tour</span></button>
             <span class="drone__bar" aria-hidden="true"><i id="droneBar"></i></span>
@@ -259,23 +287,27 @@
         <p>The pilot operates the drone from deck: guides it along the hull, stops at any area of&nbsp;interest and records video for the report. You or your master can watch the live feed next to the pilot and ask to take a&nbsp;closer look at any spot.</p>
         <p>The drone is light and quick to launch, so the inspection fits into your port stay and doesn't delay the vessel. Where diving is difficult, the drone goes first — no&nbsp;one takes unnecessary risks.</p>
         <p class="falcon__model">The vehicle is a&nbsp;Saab Seaeye Falcon, a&nbsp;professional remotely operated vehicle (ROV).</p>
-        <dl class="specs">
-          <div><dt class="mono">Operating depth</dt><dd>300<small>m</small></dd></div>
-          <div><dt class="mono">Vehicle length</dt><dd>≈1<small>m</small></dd></div>
-          <div><dt class="mono">Thrusters</dt><dd>5</dd></div>
-          <div><dt class="mono">Video to deck</dt><dd><em>live</em></dd></div>
-        </dl>
+        <dl class="specs"><div><dt class="mono">Operating depth</dt><dd>300<small>m</small></dd></div><div><dt class="mono">Vehicle length</dt><dd>≈1<small>m</small></dd></div><div><dt class="mono">Thrusters</dt><dd>5</dd></div><div><dt class="mono">Video to deck</dt><dd><em>live</em></dd></div></dl>
       </div>
     </div>
+  </div>
+</section>
 
-    <h3 class="h3">What the drone does for you</h3>
+<!-- ============ ЧТО ДРОН ДЕЛАЕТ ДЛЯ ВАС ============ -->
+<section class="section tasks-sec" id="tasks" data-zone="drone tasks">
+  <div class="tasks-sec__bg" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="wrap">
+    <header class="shead">
+      <p class="shead__num mono"><span class="depth-tag">— 0 m</span> Benefits</p>
+      <h2 class="h2">What the drone <em>does for you</em></h2>
+    </header>
     <div class="tasks">
-      <div class="task"><span class="mono">01</span><h4>Hull and bottom survey</h4><p>Travels along the side and under the bottom, streaming the picture to the pilot without interruption.</p></div>
-      <div class="task"><span class="mono">02</span><h4>Propeller and rudder</h4><p>Films the propeller, rudder, sea chest gratings and other complex areas in detail.</p></div>
-      <div class="task"><span class="mono">03</span><h4>Search for foreign objects</h4><p>On-board lighting gives a&nbsp;detailed picture even at depth and in&nbsp;murky water.</p></div>
-      <div class="task"><span class="mono">04</span><h4>Station keeping</h4><p>Holds position at a&nbsp;suspicious area so it can be examined and recorded without haste.</p></div>
-      <div class="task"><span class="mono">05</span><h4>Where diving is difficult</h4><p>Preliminary survey and hard-to-reach areas where sending a&nbsp;diver is complicated.</p></div>
-      <div class="task"><span class="mono">06</span><h4>Together with divers</h4><p>Combined with a&nbsp;diver inspection in&nbsp;one visit — faster and more reliable.</p></div>
+      <article class="task"><span class="task__ico"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M4 30h40l-6 9H10z"/><path d="M12 30V20h20v10M34 30V14h6v16"/><path d="M2 44c4 0 4-2 8-2s4 2 8 2 4-2 8-2 4 2 8 2 4-2 8-2"/></svg></span><span class="task__n mono">01</span><h3>Hull and bottom survey</h3><p>Travels along the side and under the bottom, streaming the picture to the pilot without interruption.</p></article>
+      <article class="task"><span class="task__ico"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="4"/><path d="M24 20c-2-8 2-14 6-14s4 8-6 14zM28 24c8-2 14 2 14 6s-8 4-14-6zM24 28c2 8-2 14-6 14s-4-8 6-14zM20 24c-8 2-14-2-14-6s8-4 14 6z"/></svg></span><span class="task__n mono">02</span><h3>Propeller and rudder</h3><p>Films the propeller, rudder, sea chest gratings and other complex areas in detail.</p></article>
+      <article class="task"><span class="task__ico"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="21" cy="21" r="12"/><path d="M30 30l12 12"/><path d="M15 21h12M21 15v12"/></svg></span><span class="task__n mono">03</span><h3>Search for foreign objects</h3><p>On-board lighting gives a&nbsp;detailed picture even at depth and in&nbsp;murky water.</p></article>
+      <article class="task"><span class="task__ico"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="16"/><circle cx="24" cy="24" r="6"/><path d="M24 2v8M24 38v8M2 24h8M38 24h8"/></svg></span><span class="task__n mono">04</span><h3>Station keeping</h3><p>Holds position at a&nbsp;suspicious area so it can be examined and recorded without haste.</p></article>
+      <article class="task"><span class="task__ico"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4l20 36H4z"/><path d="M24 18v10M24 33v2"/></svg></span><span class="task__n mono">05</span><h3>Where diving is difficult</h3><p>Preliminary survey and hard-to-reach areas where sending a&nbsp;diver is complicated.</p></article>
+      <article class="task"><span class="task__ico"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="16" cy="16" r="6"/><path d="M6 36c0-6 4-10 10-10s10 4 10 10"/><rect x="28" y="22" width="16" height="10" rx="2"/><path d="M32 32v4M40 32v4M26 26h2"/></svg></span><span class="task__n mono">06</span><h3>Together with divers</h3><p>Combined with a&nbsp;diver inspection in&nbsp;one visit — faster and more reliable.</p></article>
     </div>
   </div>
 </section>
@@ -367,21 +399,41 @@
 </section>
 
 <!-- ============ CLIENTS ============ -->
-<section class="section light" id="clients" data-zone="references">
+<section class="section clients" id="clients" data-zone="references">
+  <div class="clients__bg" aria-hidden="true"></div>
   <div class="wrap">
     <header class="shead">
       <p class="shead__num mono"><span class="depth-tag">— 0 m</span> References</p>
       <h2 class="h2">Trusted by <em>industry leaders</em></h2>
     </header>
     <div class="majors">
-      <div class="major"><span class="mono">Letter of recommendation</span><b>Gazprom Neft PJSC</b><p>Confirms a&nbsp;high standard of work, reliability and compliance with the safety standards of major oil &amp;&nbsp;gas projects.</p></div>
-      <div class="major"><span class="mono">Letter of recommendation</span><b>Rosneft PJSC</b><p>A&nbsp;positive recommendation from one of Russia's largest oil companies.</p></div>
+      <article class="letter">
+        <div class="letter__seal"><svg class="seal" viewBox="0 0 140 140" aria-hidden="true">
+            <defs><path id="seal0" d="M70,70 m-54,0 a54,54 0 1,1 108,0 a54,54 0 1,1 -108,0"/></defs>
+            <g class="seal__ring"><text><textPath href="#seal0" textLength="336">LETTER OF RECOMMENDATION ✦ FLOTSERVICE ✦ LETTER OF RECOMMENDATION ✦ FLOTSERVICE ✦ </textPath></text></g>
+            <circle cx="70" cy="70" r="38"/><circle cx="70" cy="70" r="31"/>
+            <path d="M70 44v52M44 70h52"/><circle cx="70" cy="70" r="9"/>
+          </svg></div>
+        <span class="mono letter__kind">Letter of recommendation</span>
+        <b>Gazprom Neft PJSC</b>
+        <p>Confirms a&nbsp;high standard of work, reliability and compliance with the safety standards of major oil &amp;&nbsp;gas projects.</p>
+        <span class="letter__foot mono"><span>№ 01</span><span>Oil &amp; gas</span></span>
+      </article>
+      <article class="letter">
+        <div class="letter__seal"><svg class="seal" viewBox="0 0 140 140" aria-hidden="true">
+            <defs><path id="seal1" d="M70,70 m-54,0 a54,54 0 1,1 108,0 a54,54 0 1,1 -108,0"/></defs>
+            <g class="seal__ring"><text><textPath href="#seal1" textLength="336">LETTER OF RECOMMENDATION ✦ FLOTSERVICE ✦ LETTER OF RECOMMENDATION ✦ FLOTSERVICE ✦ </textPath></text></g>
+            <circle cx="70" cy="70" r="38"/><circle cx="70" cy="70" r="31"/>
+            <path d="M70 44v52M44 70h52"/><circle cx="70" cy="70" r="9"/>
+          </svg></div>
+        <span class="mono letter__kind">Letter of recommendation</span>
+        <b>Rosneft PJSC</b>
+        <p>A&nbsp;positive recommendation from one of Russia's largest oil companies.</p>
+        <span class="letter__foot mono"><span>№ 02</span><span>Oil &amp; gas</span></span>
+      </article>
     </div>
-    <ul class="logos">
-      <li>Belfracht JSC</li><li>Infotek Baltika LLC</li><li>Ander Fishing Collective</li><li>Kalinin Fishing Collective</li>
-      <li>Saami LLC</li><li>Murmanfishproducts LLC</li><li>Yuzhny Flot LLC</li><li>Invest Flot LLC</li>
-      <li>White Agate Marine SPC</li><li>Serpentine Marine SPC</li><li>Pervye Gorizonty LLC</li><li>Idas LLC</li>
-    </ul>
+    <div class="clients__stats"><div><b>14</b><span>companies recommend us</span></div><div><b>2</b><span>of Russia's largest oil companies</span></div><div><b>5</b><span>ports from the Barents Sea to the Sea of&nbsp;Japan</span></div></div>
+    <ul class="logos"><li><i class="mono">01</i><span>Belfracht JSC</span></li><li><i class="mono">02</i><span>Infotek Baltika LLC</span></li><li><i class="mono">03</i><span>Ander Fishing Collective</span></li><li><i class="mono">04</i><span>Kalinin Fishing Collective</span></li><li><i class="mono">05</i><span>Saami LLC</span></li><li><i class="mono">06</i><span>Murmanfishproducts LLC</span></li><li><i class="mono">07</i><span>Yuzhny Flot LLC</span></li><li><i class="mono">08</i><span>Invest Flot LLC</span></li><li><i class="mono">09</i><span>White Agate Marine SPC</span></li><li><i class="mono">10</i><span>Serpentine Marine SPC</span></li><li><i class="mono">11</i><span>Pervye Gorizonty LLC</span></li><li><i class="mono">12</i><span>Idas LLC</span></li></ul>
   </div>
 </section>
 
@@ -406,51 +458,83 @@
 
 <!-- ============ CONTACT ============ -->
 <section class="section contact" id="contact" data-zone="seabed · 300 m">
+  <div class="contact__bg" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="wrap contact__in">
     <div class="contact__l">
       <p class="shead__num mono"><span class="depth-tag depth-tag--fixed">— 300 m</span> Request</p>
-      <h2 class="h2 h2--xl">You've reached the seabed.<br><em>Let's talk about your vessel.</em></h2>
-      <p class="muted">Fill in the form — we'll call you back during business hours (Moscow time) and suggest an inspection format. Or contact us directly:</p>
-      <ul class="contacts">
-        <li><span class="mono">Phone</span><a href="tel:+79113124949">+7 (911) 312-49-49</a></li>
-        <li><span class="mono">Phone</span><a href="tel:+79215129758">+7 (921) 512-97-58</a></li>
-        <li><span class="mono">E-mail</span><a href="mailto:flotservicecompany@mail.ru">flotservicecompany@mail.ru</a></li>
-      </ul>
+      <h2 class="h2 h2--xl">You've reached the seabed.<br><em>Get a quote in a minute.</em></h2>
+      <p class="muted">Answer four questions — we'll call you back during business hours (Moscow time) with a&nbsp;format and price. Or contact us directly:</p>
+      <ul class="contacts"><li><span class="mono">Phone</span><a href="tel:+79113124949">+7 (911) 312-49-49</a></li><li><span class="mono">Phone</span><a href="tel:+79215129758">+7 (921) 512-97-58</a></li><li><span class="mono">E-mail</span><a href="mailto:flotservicecompany@mail.ru">flotservicecompany@mail.ru</a></li></ul>
       <p class="muted small">General Director — R.&nbsp;Yu.&nbsp;Tomskikh</p>
     </div>
 
-    <form class="form" id="form" novalidate>
+    <form class="form quiz" id="form" novalidate>
       <label class="hp" aria-hidden="true">Leave this field empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
-      <div class="form__row">
-        <label class="field"><input name="name" autocomplete="name" placeholder=" "><span>Your name</span></label>
-        <label class="field"><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder=" " required><span>Phone (with country code) *</span></label>
+      <div class="quiz__top">
+        <div class="quiz__progress">
+          <span class="mono quiz__label">Step <b id="quizNum">1</b> / 4</span>
+          <span class="quiz__bar"><i id="quizBar"></i></span>
+          <span class="mono quiz__depth" id="quizDepth">— 75 m</span>
+        </div>
+        <div class="quiz__summary" id="quizSummary" aria-live="polite" data-empty="Your request will appear here"></div>
       </div>
-      <div class="form__row">
-        <label class="field"><input name="company" autocomplete="organization" placeholder=" "><span>Company</span></label>
-        <label class="field"><input name="vessel" placeholder=" "><span>Vessel name</span></label>
-      </div>
-      <div class="form__row">
-        <label class="field field--select"><select name="length"><option>Not sure</option><option>up to 100 m</option><option>up to 150 m</option><option>up to 180 m</option><option>up to 200 m</option><option>over 200 m</option></select><span>Vessel length</span></label>
-        <label class="field field--select"><select name="port"><option>Murmansk &amp; region</option><option>St. Petersburg</option><option>Ust-Luga</option><option>Primorsk</option><option>Nakhodka</option><option>Other</option></select><span>Port</span></label>
-      </div>
-      <fieldset class="chips">
-        <legend class="mono">Service</legend>
-        <label><input type="radio" name="format" value="Diver" checked><span>Diver</span></label>
-        <label><input type="radio" name="format" value="Falcon drone"><span>Falcon drone</span></label>
-        <label><input type="radio" name="format" value="Diver + drone"><span>Both</span></label>
-        <label><input type="radio" name="format" value="Please advise"><span>Please advise</span></label>
+
+      <fieldset class="quiz__step is-active" data-step="1">
+        <legend class="quiz__q">What is your vessel?</legend>
+        <div class="ship-meter">
+          <div class="ship-meter__sea" aria-hidden="true"><svg class="ship-meter__ship" viewBox="0 0 120 40"><use href="#ship"/></svg></div>
+          <output class="ship-meter__val" id="lenVal" for="lenRange">Not sure</output>
+        </div>
+        <input class="ship-meter__range" type="range" min="0" max="5" step="1" value="0" id="lenRange" aria-label="Vessel length" data-labels="Not sure|up to 100 m|up to 150 m|up to 180 m|up to 200 m|over 200 m">
+        <div class="ship-meter__ticks mono" aria-hidden="true"><span>?</span><span>100</span><span>150</span><span>180</span><span>200</span><span>200+</span></div>
+        <input type="hidden" name="length" id="lenInput" value="Not sure">
+        <label class="field"><input name="vessel" placeholder=" "><span>Vessel name, if known</span></label>
+        <div class="quiz__nav"><button type="button" class="btn btn--brass quiz__next">Next <span class="arr" aria-hidden="true">→</span></button></div>
       </fieldset>
-      <label class="field"><textarea name="comment" rows="2" placeholder=" "></textarea><span>Comment — e.g. vessel at anchor, report needed</span></label>
-      <label class="agree" id="agreeLabel">
-        <input type="checkbox" name="agree" required>
-        <span class="agree__box" aria-hidden="true"></span>
-        <span>I&nbsp;give my <a href="consent.html" target="_blank" rel="noopener">consent to the processing of personal data</a> and have read the <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a></span>
-      </label>
-      <button class="btn btn--brass btn--full magnetic" type="submit">Get a quote <span class="arr" aria-hidden="true">→</span></button>
-      <div class="form__ok" id="formOk" hidden>
-        <b>Thank you. Your request is ready.</b>
-        <p>Your e-mail app will open with a&nbsp;pre-filled message — just press “Send”. If it doesn't open, call us: <a href="tel:+79113124949">+7 (911) 312-49-49</a>.</p>
-      </div>
+
+      <fieldset class="quiz__step" data-step="2">
+        <legend class="quiz__q">Where is the vessel?</legend>
+        <div class="opts opts--ports">
+          <label class="opt opt--port"><input type="radio" name="port" value="Murmansk &amp; region"><span><b>Murmansk &amp; region</b><i class="mono">68°58′ N</i></span></label>
+          <label class="opt opt--port"><input type="radio" name="port" value="St. Petersburg"><span><b>St. Petersburg</b><i class="mono">59°56′ N</i></span></label>
+          <label class="opt opt--port"><input type="radio" name="port" value="Ust-Luga"><span><b>Ust-Luga</b><i class="mono">59°40′ N</i></span></label>
+          <label class="opt opt--port"><input type="radio" name="port" value="Primorsk"><span><b>Primorsk</b><i class="mono">60°21′ N</i></span></label>
+          <label class="opt opt--port"><input type="radio" name="port" value="Nakhodka"><span><b>Nakhodka</b><i class="mono">42°49′ N</i></span></label>
+          <label class="opt opt--port"><input type="radio" name="port" value="Other"><span><b>Other</b><i class="mono">on request</i></span></label>
+        </div>
+        <div class="quiz__nav"><button type="button" class="btn btn--line quiz__back">← Back</button><button type="button" class="btn btn--brass quiz__next">Next <span class="arr" aria-hidden="true">→</span></button></div>
+      </fieldset>
+
+      <fieldset class="quiz__step" data-step="3">
+        <legend class="quiz__q">How do we inspect?</legend>
+        <div class="opts opts--formats">
+          <label class="opt opt--format"><input type="radio" name="format" value="Diver" checked><span><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="14" r="8"/><path d="M16 14h16"/><path d="M12 42c2-9 6-13 12-13s10 4 12 13"/><path d="M34 8c4 2 6 6 6 10"/></svg><b>Diver</b><small>Hands-on inspection by a&nbsp;certified diver</small></span></label>
+          <label class="opt opt--format"><input type="radio" name="format" value="Falcon drone"><span><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="14" width="32" height="18" rx="4"/><circle cx="30" cy="23" r="5"/><path d="M8 19H4M8 27H4M40 19h4M40 27h4M15 32v6M33 32v6"/></svg><b>Falcon drone</b><small>Live video on&nbsp;a&nbsp;monitor on deck</small></span></label>
+          <label class="opt opt--format"><input type="radio" name="format" value="Diver + drone"><span><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="14" cy="14" r="6"/><path d="M6 32c1-6 4-9 8-9s7 3 8 9"/><rect x="26" y="18" width="18" height="12" rx="3"/><circle cx="38" cy="24" r="3"/></svg><b>Both</b><small>The most complete inspection in&nbsp;one visit</small></span></label>
+          <label class="opt opt--format"><input type="radio" name="format" value="Please advise"><span><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18"/><path d="M18 19a6 6 0 1 1 8 5.6c-1.4.6-2 1.6-2 3V30M24 35v1"/></svg><b>Please advise</b><small>We'll pick the right format</small></span></label>
+        </div>
+        <div class="quiz__nav"><button type="button" class="btn btn--line quiz__back">← Back</button><button type="button" class="btn btn--brass quiz__next">Next <span class="arr" aria-hidden="true">→</span></button></div>
+      </fieldset>
+
+      <fieldset class="quiz__step" data-step="4">
+        <legend class="quiz__q">Where should we send the quote?</legend>
+        <div class="form__row">
+          <label class="field"><input name="name" autocomplete="name" placeholder=" "><span>Your name</span></label>
+          <label class="field"><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder=" " required><span>Phone (with country code) *</span></label>
+        </div>
+        <label class="field"><input name="company" autocomplete="organization" placeholder=" "><span>Company</span></label>
+        <label class="field"><textarea name="comment" rows="2" placeholder=" "></textarea><span>Comment — e.g. vessel at anchor, report needed</span></label>
+        <label class="agree" id="agreeLabel">
+          <input type="checkbox" name="agree" required>
+          <span class="agree__box" aria-hidden="true"></span>
+          <span>I&nbsp;give my <a href="consent.html" target="_blank" rel="noopener">consent to the processing of personal data</a> and have read the <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a></span>
+        </label>
+        <div class="quiz__nav">
+          <button type="button" class="btn btn--line quiz__back">← Back</button>
+          <button class="btn btn--brass magnetic" type="submit">Get a quote <span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <div class="form__ok" id="formOk" hidden></div>
+      </fieldset>
     </form>
   </div>
 </section>

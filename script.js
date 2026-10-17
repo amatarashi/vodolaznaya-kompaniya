@@ -12,11 +12,14 @@
     unit: 'm',
     menuOpen: 'Open menu', menuClose: 'Close menu',
     hots: [
-      ['01 · Camera', 'High-definition camera', 'Colour camera on a tilt mechanism: the pilot angles it to examine the hull from any side.', ['Tilt mechanism', 'Recorded for the report']],
-      ['02 · Lights', 'LED floodlights', 'On-board lighting gives a clear picture at depth, under the bottom and in murky water.', ['LED', 'Murky water', 'Under the bottom']],
-      ['03 · Thrusters', 'Electric thrusters', 'Five thrusters let the pilot manoeuvre precisely along the hull and hold position at any spot.', ['5 thrusters', 'Station keeping']],
-      ['04 · Frame', 'Buoyancy and protective frame', 'About one metre long: launched quickly from deck, rated to 300 m depth.', ['≈1 m', 'Up to 300 m']]
+      ['01 · Camera', 'High-definition camera', 'Colour camera on a tilt mechanism: the pilot angles it to examine the hull from any side. Everything it sees is recorded for the report.', ['Tilt mechanism', 'Recorded for the report'], 'CAMERA'],
+      ['02 · Light', 'LED floodlight', 'On-board lighting gives a clear picture at depth, under the bottom and in murky water — where daylight does not reach.', ['LED', 'Murky water', 'Under the bottom'], 'LED LIGHT'],
+      ['03 · Thruster', 'Ducted electric thruster', 'A propeller in a protective duct. Five such thrusters let the pilot manoeuvre precisely along the hull and hold position at any spot.', ['5 thrusters', 'Station keeping'], 'THRUSTER'],
+      ['04 · Buoyancy', 'Buoyancy blocks', 'The yellow blocks keep the drone neutrally buoyant, so it hovers steadily next to the hull instead of sinking when it stops.', ['Neutral buoyancy', 'Stable hover'], 'BUOYANCY'],
+      ['05 · Frame', 'Protective frame', 'A sturdy frame protects the camera and thrusters when working close to the hull and launching from deck. About one metre long.', ['≈1 m', 'Up to 300 m'], 'FRAME']
     ],
+    modes: { photo: 'PHOTO', sonar: 'SONAR', blueprint: 'BLUEPRINT' },
+    quiz: { depth: [75, 150, 225, 300] },
     mailSubject: 'Hull inspection request / Заявка на осмотр судна',
     mailTitle: 'Request from the FlotService website (English version)',
     labels: ['Name / Имя', 'Phone / Телефон', 'Company / Компания', 'Vessel / Судно', 'Vessel length / Длина', 'Port / Порт', 'Service / Формат', 'Comment / Комментарий']
@@ -24,11 +27,14 @@
     unit: 'м',
     menuOpen: 'Открыть меню', menuClose: 'Закрыть меню',
     hots: [
-      ['01 · Камера', 'Камера высокого разрешения', 'Цветная камера на поворотном механизме: оператор наклоняет её и рассматривает корпус под нужным углом.', ['Поворотный механизм', 'Запись для акта']],
-      ['02 · Свет', 'Светодиодные прожекторы', 'Собственное освещение даёт чёткую картинку даже на глубине, под днищем и в мутной воде.', ['LED', 'Мутная вода', 'Под днищем']],
-      ['03 · Движение', 'Электрические движители', 'Пять движителей позволяют точно маневрировать вдоль борта и удерживать позицию у нужного участка.', ['5 движителей', 'Удержание позиции']],
-      ['04 · Корпус', 'Плавучесть и защитная рама', 'Лёгкий аппарат длиной около метра: быстро спускается с борта и работает на глубине до 300 м.', ['≈1 м', 'До 300 м']]
+      ['01 · Камера', 'Камера высокого разрешения', 'Цветная камера на поворотном механизме: оператор наклоняет её и рассматривает корпус под нужным углом. Всё, что она видит, записывается для акта.', ['Поворотный механизм', 'Запись для акта'], 'КАМЕРА'],
+      ['02 · Свет', 'Светодиодный прожектор', 'Собственное освещение даёт чёткую картинку на глубине, под днищем и в мутной воде — там, куда не доходит дневной свет.', ['LED', 'Мутная вода', 'Под днищем'], 'ПРОЖЕКТОР'],
+      ['03 · Движение', 'Движитель в насадке', 'Винт в защитном кольце. Пять таких движителей позволяют точно маневрировать вдоль борта и удерживать позицию у нужного участка.', ['5 движителей', 'Удержание позиции'], 'ДВИЖИТЕЛЬ'],
+      ['04 · Плавучесть', 'Блоки плавучести', 'Жёлтые блоки держат аппарат в нейтральной плавучести: он устойчиво висит у корпуса и не тонет, когда останавливается.', ['Нейтральная плавучесть', 'Устойчивость'], 'ПЛАВУЧЕСТЬ'],
+      ['05 · Рама', 'Защитная рама', 'Прочная рама защищает камеру и движители при работе у корпуса и при спуске с борта. Длина аппарата — около метра.', ['≈1 м', 'До 300 м'], 'РАМА']
     ],
+    modes: { photo: 'ФОТО', sonar: 'СОНАР', blueprint: 'ЧЕРТЁЖ' },
+    quiz: { depth: [75, 150, 225, 300] },
     mailSubject: 'Заявка на осмотр судна',
     mailTitle: 'Заявка с сайта ФлотСервис',
     labels: ['Имя', 'Телефон', 'Компания', 'Судно', 'Длина судна', 'Порт', 'Формат', 'Комментарий']
@@ -101,7 +107,6 @@
   /* ---------- Шапка, глубиномер, мобильная панель ---------- */
   const header = $('.header');
   const gauge = $('.gauge');
-  const fill = $('#gaugeFill');
   const zoneLabel = $('#gaugeSection');
   const depthEls = $$('[data-depth]');
   const mbar = $('.mbar');
@@ -133,8 +138,27 @@
     measurers.forEach(fn => fn());
   }
 
-  const state = { depth: -1, zone: -1, scrolled: null, hidden: false, pastHero: null };
-  let lastY = scrollY;
+  // Глубиномер слева: шкала с делениями, указатель, давление и метки разделов
+  // (по меткам можно перейти к разделу). Шапка видна всегда, внизу у неё полоска глубины.
+  const gaugePa = $('#gaugePa');
+  const gaugeMarks = $('#gaugeMarks');
+  const markZones = zones.filter(z => z.id);
+  const marks = markZones.map(z => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'gauge__mark';
+    b.innerHTML = `<span>${z.dataset.zone}</span>`;
+    b.setAttribute('aria-label', z.dataset.zone);
+    b.addEventListener('click', () => z.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }));
+    gaugeMarks.appendChild(b);
+    return b;
+  });
+  measurers.push(() => markZones.forEach((z, i) => {
+    const top = Math.min(metrics.max, Math.max(0, z.getBoundingClientRect().top + scrollY - metrics.vh * 0.4));
+    marks[i].style.top = (top / metrics.max) * 100 + '%';
+  }));
+
+  const state = { depth: -1, zone: -1, scrolled: null, pastHero: null };
   let ticking = false;
   function onScroll() {
     ticking = false;
@@ -144,19 +168,16 @@
 
     const scrolled = y > 20;
     if (scrolled !== state.scrolled) { state.scrolled = scrolled; header.classList.toggle('is-scrolled', scrolled); }
-    // прячем шапку при прокрутке вниз, показываем при прокрутке вверх
-    let hidden = state.hidden;
-    if (y > lastY + 4 && y > vh && !nav.classList.contains('is-open')) hidden = true;
-    else if (y < lastY - 4 || y <= vh) hidden = false;
-    if (hidden !== state.hidden) { state.hidden = hidden; header.classList.toggle('is-hidden', hidden); }
-    lastY = y;
 
     const depth = Math.round(p * MAX_DEPTH);
     if (depth !== state.depth) {
       state.depth = depth;
       const txt = pad(depth);
       depthEls.forEach(el => (el.textContent = txt));
-      fill.style.height = p * 100 + '%';
+      gauge.style.setProperty('--p', p.toFixed(4));
+      header.style.setProperty('--p', p.toFixed(4));
+      // давление: 1 атм на поверхности + 1 атм на каждые 10 м воды
+      gaugePa.textContent = (1 + depth / 10).toFixed(1);
     }
     const pastHero = y > heroH * 0.6;
     if (pastHero !== state.pastHero) {
@@ -173,6 +194,7 @@
       const current = zones[zi];
       zoneLabel.textContent = current.dataset.zone;
       navLinks.forEach(a => a.classList.toggle('is-current', a.getAttribute('href') === '#' + current.id));
+      marks.forEach((m, i) => m.classList.toggle('is-current', markZones[i] === current));
     }
 
     words(y);
@@ -200,7 +222,6 @@
   const burger = $('#burger');
   const setMenu = open => {
     nav.classList.toggle('is-open', open);
-    if (open) header.classList.remove('is-hidden');
     burger.setAttribute('aria-expanded', open);
     burger.setAttribute('aria-label', open ? T.menuClose : T.menuOpen);
     document.body.style.overflow = open ? 'hidden' : '';
@@ -241,6 +262,11 @@
   const tourBtn = $('#droneTour');
   const tourBar = $('#droneBar');
   const introHTML = tip.innerHTML;
+  const hudTarget = $('#hudTarget');
+  const hudZoom = $('#hudZoom');
+  const hudMode = $('#hudMode');
+  const hudClock = $('#hudClock');
+  const monitor = $('#droneMonitor');
   const TOUR_MS = 4500;
   let current = -1;
   let tourTimer = null;
@@ -259,12 +285,16 @@
       tip.innerHTML = introHTML;
       count.textContent = '00 / ' + pad2(hots.length);
       resetBtn.hidden = true;
+      hudTarget.textContent = '—';
+      hudZoom.textContent = '1.0×';
     } else {
       const h = hots[i];
       stage.style.setProperty('--zx', h.style.getPropertyValue('--x'));
       stage.style.setProperty('--zy', h.style.getPropertyValue('--y'));
       stage.classList.add('is-zoomed');
-      const [m, t, d, chips] = T.hots[i];
+      const [m, t, d, chips, target] = T.hots[i];
+      hudTarget.textContent = target;
+      hudZoom.textContent = matchMedia('(max-width: 640px)').matches ? '2.1×' : '2.0×';
       tip.innerHTML = `<span class="mono">${m}</span><b>${t}</b><span>${d}</span>` +
         `<span class="drone__chips">${chips.map(c => `<i>${c}</i>`).join('')}</span>`;
       count.innerHTML = `<b>${pad2(i + 1)}</b> / ${pad2(hots.length)}`;
@@ -338,6 +368,47 @@
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(([e]) => { if (!e.isIntersecting && tourTimer) stopTour(); }).observe(drone);
   }
+  // режимы изображения: фото, сонар, чертёж
+  $$('.drone__mode').forEach(btn => btn.addEventListener('click', () => {
+    const mode = btn.dataset.mode;
+    stage.dataset.mode = mode;
+    hudMode.textContent = T.modes[mode];
+    $$('.drone__mode').forEach(b => {
+      const on = b === btn;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-checked', on);
+    });
+    drone.classList.add('is-used');
+  }));
+
+  // часы в углу «камеры» — идут, только пока блок на экране
+  let clockTimer = null;
+  const tickClock = () => { hudClock.textContent = new Date().toLocaleTimeString('ru-RU', { hour12: false }); };
+  // линия сканирования проходит всю высоту кадра
+  const setScanHeight = () => monitor.style.setProperty('--h', frame.offsetHeight + 'px');
+  measurers.push(setScanHeight);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => {
+      clearInterval(clockTimer);
+      if (e.isIntersecting) { tickClock(); clockTimer = setInterval(tickClock, 1000); }
+    }).observe(monitor);
+  } else tickClock();
+
+  // монитор слегка наклоняется вслед за мышью (только на компьютере)
+  if (fine && !reduced) {
+    monitor.addEventListener('mousemove', e => {
+      const r = monitor.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      monitor.style.setProperty('--rx', (x * 6).toFixed(2) + 'deg');
+      monitor.style.setProperty('--ry', (-y * 5).toFixed(2) + 'deg');
+    });
+    monitor.addEventListener('mouseleave', () => {
+      monitor.style.setProperty('--rx', '0deg');
+      monitor.style.setProperty('--ry', '0deg');
+    });
+  }
+
   showPart(-1);
   tip.classList.remove('is-swap');
 
@@ -386,7 +457,7 @@
   }
 
   /* ---------- Появление блоков ---------- */
-  const revealTargets = $$('.shead, .switch, .who, .row, .drone, .falcon__text, .task, .quote, .player, .promise, .individual, .port, .major, .logos, .acc, .form, .contact__l, .manifest__sign, .sizes, .footer__in');
+  const revealTargets = $$('.shead, .switch, .who, .row, .drone, .falcon__text, .task, .quote, .player, .promise, .individual, .port, .letter, .clients__stats, .logos, .acc, .form, .contact__l, .manifest__sign, .sizes, .footer__in');
   revealTargets.forEach(el => el.classList.add('reveal'));
   const stepItems = $$('.steps li');
   if ('IntersectionObserver' in window) {
@@ -470,12 +541,77 @@
   const form = $('#form');
   const phone = form.elements.phone;
 
-  // кнопки «Заказать …» подставляют формат
+  /* ---------- Калькулятор-квиз: 4 шага, прогресс-погружение, живая сводка ---------- */
+  const steps = $$('.quiz__step', form);
+  const quizNum = $('#quizNum');
+  const quizBar = $('#quizBar');
+  const quizDepth = $('#quizDepth');
+  const summary = $('#quizSummary');
+  const lenRange = $('#lenRange');
+  const lenInput = $('#lenInput');
+  const lenVal = $('#lenVal');
+  const ship = $('.ship-meter__ship', form);
+  const lenLabels = lenRange.dataset.labels.split('|');
+  let stepIdx = 0;
+  form.classList.add('is-js');
+  // формат выбирает сам посетитель — без предвыбора
+  $$('input[name="format"]', form).forEach(r => (r.checked = false));
+
+  function goStep(i, back = false) {
+    stepIdx = Math.max(0, Math.min(steps.length - 1, i));
+    steps.forEach((st, k) => {
+      st.classList.toggle('is-active', k === stepIdx);
+      st.classList.toggle('is-back', back && k === stepIdx);
+    });
+    quizNum.textContent = stepIdx + 1;
+    quizBar.style.transform = `scaleX(${(stepIdx + 1) / steps.length})`;
+    quizDepth.textContent = '— ' + T.quiz.depth[stepIdx] + ' ' + T.unit;
+    // на телефоне держим начало формы в поле зрения
+    const top = form.getBoundingClientRect().top;
+    if (top < 0) form.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  function renderSummary() {
+    const parts = [];
+    if (+lenRange.value > 0) parts.push(lenInput.value);
+    if (form.elements.vessel.value.trim()) parts.push(form.elements.vessel.value.trim());
+    const port = $('input[name="port"]:checked', form);
+    if (port) parts.push(port.value);
+    const fmt = $('input[name="format"]:checked', form);
+    if (fmt) parts.push(fmt.value);
+    summary.replaceChildren(...parts.map(t => Object.assign(document.createElement('span'), { textContent: t })));
+  }
+
+  function updateLength() {
+    const v = +lenRange.value;
+    lenVal.textContent = lenLabels[v];
+    lenInput.value = lenLabels[v];
+    lenRange.setAttribute('aria-valuetext', lenLabels[v]);
+    lenRange.style.setProperty('--fill', (v / 5) * 100 + '%');
+    // кораблик растёт вместе с длиной судна
+    ship.style.setProperty('--w', (v === 0 ? 34 : 30 + v * 13) + '%');
+    renderSummary();
+  }
+  lenRange.addEventListener('input', updateLength);
+  form.elements.vessel.addEventListener('input', renderSummary);
+  // выбор порта или формата — и сразу следующий шаг
+  $$('input[name="port"], input[name="format"]', form).forEach(r => r.addEventListener('change', () => {
+    renderSummary();
+    const at = stepIdx;
+    setTimeout(() => { if (stepIdx === at) goStep(at + 1); }, 380);
+  }));
+  $$('.quiz__next', form).forEach(b => b.addEventListener('click', () => goStep(stepIdx + 1)));
+  $$('.quiz__back', form).forEach(b => b.addEventListener('click', () => goStep(stepIdx - 1, true)));
+  updateLength();
+  goStep(0);
+
+  // кнопки «Заказать …» на сайте подставляют формат в калькулятор
   $$('[data-format]').forEach(a => a.addEventListener('click', () => {
     const f = a.dataset.format;
     const radio = [...form.elements.format].find(r => r.value === f);
     if (radio) radio.checked = true;
     else if (!form.elements.comment.value) form.elements.comment.value = f;
+    renderSummary();
   }));
 
   const digits = () => phone.value.replace(/\D/g, '').length;
@@ -577,6 +713,8 @@
       if (json && json.ok) {
         showOk(MSG.sent);
         form.reset();
+        $$('input[name="format"]', form).forEach(r => (r.checked = false));
+        updateLength();
         $$('.field input, .field textarea', form).forEach(i => i.classList.remove('is-error'));
       } else if (json && json.error === 'rate') {
         showOk([MSG.rate.trim(), ''], callTail.trim());
