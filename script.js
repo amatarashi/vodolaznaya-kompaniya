@@ -6,6 +6,30 @@
   const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
   const pad = n => String(n).padStart(3, '0');
 
+  /* ---------- Сайт всегда открывается с первого экрана ---------- */
+  // браузер не должен восстанавливать прошлую позицию или прыгать по #якорю из адреса
+  const toTop = () => {
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+    scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  };
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  toTop();
+  addEventListener('load', toTop);
+  addEventListener('pageshow', e => { if (e.persisted) toTop(); });
+
+  // ссылки внутри страницы листают к разделу, но не дописывают #якорь в адрес —
+  // иначе при повторном открытии сайт начинался бы с этого раздела
+  document.addEventListener('click', e => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const id = a.getAttribute('href').slice(1);
+    const target = id && document.getElementById(id);
+    if (!target) return;
+    e.preventDefault();
+    target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+  });
+
   /* ---------- Прелоадер: «погружение» 000 → 300 м ---------- */
   const loader = $('#loader');
   const loaderDepth = $('#loaderDepth');
