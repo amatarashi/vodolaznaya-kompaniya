@@ -435,6 +435,9 @@ em{font-style:italic;font-family:var(--serif);color:var(--brass);font-weight:400
 .lang{font-family:var(--mono);font-size:11px;letter-spacing:.14em;padding:8px 12px;border:1px solid var(--line-2);border-radius:999px;color:#d8d2c8;transition:border-color .3s,color .3s;flex-shrink:0}
 .lang:hover{border-color:var(--brass);color:var(--brass)}
 
+/* скрытое поле-ловушка для спам-ботов */
+.hp{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
+
 /* ---------- Согласие в форме ---------- */
 .agree{display:flex;gap:12px;align-items:flex-start;margin-top:22px;font-size:14px;line-height:1.5;color:#cfc9be;cursor:pointer}
 .agree input{position:absolute;opacity:0;width:1px;height:1px}

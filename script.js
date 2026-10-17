@@ -504,19 +504,30 @@
     phone.value = out;
   });
 
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const isRuMasked = !EN && phone.value.startsWith('+7');
-    if (isRuMasked ? digits() < 11 : digits() < 7) {
-      phone.classList.add('is-error');
-      phone.focus();
-      return;
-    }
-    if (!agree.checked) {
-      agreeLabel.classList.add('is-error');
-      agree.focus();
-      return;
-    }
+  // время открытия страницы — сервер отсекает ботов, заполняющих форму мгновенно
+  const startedAt = Date.now();
+  const submitBtn = form.querySelector('[type=submit]');
+  const okBox = $('#formOk');
+  const MSG = EN ? {
+    sending: 'Sending…',
+    sent: ['Thank you! Your request has been sent.', 'We will call you back during business hours (Moscow time).'],
+    mail: ['Your request is ready.', 'Your e-mail app will open with a pre-filled message — just press “Send”.'],
+    rate: 'Too many requests. Please call us: '
+  } : {
+    sending: 'Отправляем…',
+    sent: ['Спасибо! Заявка отправлена.', 'Перезвоним в рабочее время и предложим формат осмотра.'],
+    mail: ['Заявка сформирована.', 'Откроется почтовая программа с готовым письмом — нажмите «Отправить».'],
+    rate: 'Слишком много заявок подряд. Позвоните нам: '
+  };
+  const showOk = ([title, text], tail = '') => {
+    okBox.innerHTML = `<b>${title}</b><p>${text}${tail}</p>`;
+    okBox.hidden = false;
+    okBox.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' });
+  };
+  const callTail = ' <a href="tel:+79113124949">+7 (911) 312-49-49</a>.';
+
+  // запасной путь: если сервер заявок недоступен, письмо формируется в почтовой программе
+  function sendByMail() {
     const f = form.elements;
     const L = T.labels;
     const body = [
@@ -531,9 +542,53 @@
       L[6] + ': ' + f.format.value,
       L[7] + ': ' + (f.comment.value || '—')
     ].join('\n');
-    $('#formOk').hidden = false;
+    showOk(MSG.mail, (EN ? ' If it doesn\'t open, call us:' : ' Если не открылась, позвоните:') + callTail);
     location.href = 'mailto:flotservicecompany@mail.ru?subject=' +
       encodeURIComponent(T.mailSubject) + '&body=' + encodeURIComponent(body);
+  }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const isRuMasked = !EN && phone.value.startsWith('+7');
+    if (isRuMasked ? digits() < 11 : digits() < 7) {
+      phone.classList.add('is-error');
+      phone.focus();
+      return;
+    }
+    if (!agree.checked) {
+      agreeLabel.classList.add('is-error');
+      agree.focus();
+      return;
+    }
+    const data = new FormData(form);
+    data.set('agree', '1');
+    data.set('lang', EN ? 'en' : 'ru');
+    data.set('started', String(startedAt));
+
+    const label = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.textContent = MSG.sending;
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 15000);
+      const res = await fetch('/send.php', { method: 'POST', body: data, signal: ctrl.signal });
+      clearTimeout(timer);
+      const json = res.headers.get('content-type')?.includes('json') ? await res.json() : null;
+      if (json && json.ok) {
+        showOk(MSG.sent);
+        form.reset();
+        $$('.field input, .field textarea', form).forEach(i => i.classList.remove('is-error'));
+      } else if (json && json.error === 'rate') {
+        showOk([MSG.rate.trim(), ''], callTail.trim());
+      } else {
+        sendByMail(); // нет сервера (например, статический хостинг) или ошибка на нём
+      }
+    } catch (err) {
+      sendByMail();
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = label;
+    }
   });
 
   $('#year').textContent = new Date().getFullYear();

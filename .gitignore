@@ -4,3 +4,5 @@ _версия-1/
 
 .vercel
 .env*
+data/leads.csv
+data/rate.json

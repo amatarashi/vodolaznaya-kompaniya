@@ -1,0 +1,35 @@
+# Настройки для российского хостинга (Apache): HTTPS, кэш, защита служебных файлов
+
+AddDefaultCharset UTF-8
+Options -Indexes
+
+# всегда открывать сайт по HTTPS
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# скрытые и служебные файлы недоступны снаружи
+<FilesMatch "^\.|\.(md|csv|json|log|py)$">
+  Require all denied
+</FilesMatch>
+
+AddType font/woff2 .woff2
+AddType video/mp4 .mp4
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript image/svg+xml
+</IfModule>
+
+# картинки, шрифты и видео кэшируются надолго, страницы и скрипты — коротко
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType video/mp4 "access plus 30 days"
+  ExpiresByType text/css "access plus 1 hour"
+  ExpiresByType application/javascript "access plus 1 hour"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
