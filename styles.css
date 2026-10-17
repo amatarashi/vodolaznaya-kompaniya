@@ -484,6 +484,15 @@ em{font-style:italic;font-family:var(--serif);color:var(--brass);font-weight:400
   .mbar__call svg{width:20px;height:20px;fill:var(--brass)}
   .mbar__cta{background:var(--brass);color:var(--ink)}
 }
+/* Сенсорные экраны: убираем то, что телефон перерисовывает на каждом кадре прокрутки */
+@media (hover:none),(pointer:coarse){
+  .grain{display:none}
+  .header.is-scrolled{background:rgba(7,13,20,.96);backdrop-filter:none;-webkit-backdrop-filter:none}
+  .mbar{background:rgba(7,13,20,.97);backdrop-filter:none;-webkit-backdrop-filter:none}
+  .player__circle{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(7,13,20,.35)}
+  .deck img{top:0;height:100%}
+  .reveal{transform:translateY(24px);transition-duration:.8s}
+}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
   html{scroll-behavior:auto}

@@ -12,7 +12,10 @@
   const loaderBar = $('#loaderBar');
   document.body.classList.add('is-loading');
 
+  let finished = false;
   function finishLoading() {
+    if (finished) return;
+    finished = true;
     loader.classList.add('is-done');
     document.body.classList.remove('is-loading');
     document.body.classList.add('is-ready');
@@ -23,7 +26,7 @@
   try { seen = sessionStorage.getItem('fs-intro') === '1'; sessionStorage.setItem('fs-intro', '1'); } catch (e) {}
   if (reduced || seen) {
     loader.style.display = 'none';
-    requestAnimationFrame(finishLoading);
+    finishLoading();
   } else {
     const DURATION = 1500;
     const t0 = performance.now();
@@ -35,9 +38,12 @@
       loaderDepth.textContent = pad(Math.round(eased * MAX_DEPTH));
       loaderBar.style.width = eased * 100 + '%';
       // ждём загрузку страницы, но не дольше 3,5 с
+      if (finished) return;
       if (p < 1 || (!loaded && now - t0 < 3500)) requestAnimationFrame(tick);
       else setTimeout(finishLoading, 200);
     })(t0);
+    // страховка: в фоновой вкладке анимация может стоять — заставку всё равно убираем
+    setTimeout(finishLoading, 4000);
   }
 
   /* ---------- Шапка, глубиномер, мобильная панель ---------- */
@@ -61,39 +67,82 @@
     });
   }
 
-  let lastY = 0;
+  // Размеры страницы меряем заранее (при загрузке и изменении вёрстки),
+  // а во время прокрутки только сравниваем числа и меняем DOM, если что-то изменилось.
+  // Так скролл не заставляет браузер пересчитывать раскладку на каждом кадре.
+  const navLinks = $$('.nav > a');
+  const metrics = { vh: innerHeight, max: 1, heroH: 0, zoneTops: [] };
+  const measurers = [];
+  function measure() {
+    metrics.vh = innerHeight;
+    metrics.max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+    metrics.heroH = hero.offsetHeight;
+    metrics.zoneTops = zones.map(z => z.getBoundingClientRect().top + scrollY);
+    measurers.forEach(fn => fn());
+  }
+
+  const state = { depth: -1, zone: -1, scrolled: null, hidden: false, pastHero: null };
+  let lastY = scrollY;
   let ticking = false;
   function onScroll() {
-    const y = window.scrollY;
-    const max = document.documentElement.scrollHeight - innerHeight;
-    const p = max > 0 ? Math.min(1, Math.max(0, y / max)) : 0;
+    ticking = false;
+    const y = scrollY;
+    const { vh, max, heroH, zoneTops } = metrics;
+    const p = Math.min(1, Math.max(0, y / max));
 
-    header.classList.toggle('is-scrolled', y > 20);
+    const scrolled = y > 20;
+    if (scrolled !== state.scrolled) { state.scrolled = scrolled; header.classList.toggle('is-scrolled', scrolled); }
     // прячем шапку при прокрутке вниз, показываем при прокрутке вверх
-    const menuOpen = nav.classList.contains('is-open');
-    header.classList.toggle('is-hidden', !menuOpen && y > innerHeight && y > lastY + 4);
-    if (y < lastY - 4) header.classList.remove('is-hidden');
+    let hidden = state.hidden;
+    if (y > lastY + 4 && y > vh && !nav.classList.contains('is-open')) hidden = true;
+    else if (y < lastY - 4 || y <= vh) hidden = false;
+    if (hidden !== state.hidden) { state.hidden = hidden; header.classList.toggle('is-hidden', hidden); }
     lastY = y;
 
-    depthEls.forEach(el => (el.textContent = pad(Math.round(p * MAX_DEPTH))));
-    fill.style.height = p * 100 + '%';
-    const pastHero = y > hero.offsetHeight * 0.6;
-    gauge.classList.toggle('is-on', pastHero);
-    mbar.classList.toggle('is-on', pastHero);
+    const depth = Math.round(p * MAX_DEPTH);
+    if (depth !== state.depth) {
+      state.depth = depth;
+      const txt = pad(depth);
+      depthEls.forEach(el => (el.textContent = txt));
+      fill.style.height = p * 100 + '%';
+    }
+    const pastHero = y > heroH * 0.6;
+    if (pastHero !== state.pastHero) {
+      state.pastHero = pastHero;
+      gauge.classList.toggle('is-on', pastHero);
+      mbar.classList.toggle('is-on', pastHero);
+    }
 
-    const mid = y + innerHeight * 0.4;
-    let current = zones[0];
-    for (const z of zones) if (z.offsetTop <= mid) current = z;
-    zoneLabel.textContent = current.dataset.zone;
-    $$('.nav > a').forEach(a => a.classList.toggle('is-current', a.getAttribute('href') === '#' + current.id));
+    const mid = y + vh * 0.4;
+    let zi = 0;
+    for (let i = 0; i < zoneTops.length; i++) if (zoneTops[i] <= mid) zi = i;
+    if (zi !== state.zone) {
+      state.zone = zi;
+      const current = zones[zi];
+      zoneLabel.textContent = current.dataset.zone;
+      navLinks.forEach(a => a.classList.toggle('is-current', a.getAttribute('href') === '#' + current.id));
+    }
 
-    words();
-    parallax();
-    ticking = false;
+    words(y);
+    parallax(y);
   }
-  addEventListener('scroll', () => { if (!ticking) { requestAnimationFrame(onScroll); ticking = true; } }, { passive: true });
-  addEventListener('resize', () => { syncDepthTags(); onScroll(); });
-  addEventListener('load', () => { syncDepthTags(); onScroll(); });
+  const requestTick = () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } };
+  addEventListener('scroll', requestTick, { passive: true });
+
+  // на телефоне resize срабатывает, когда прячется адресная строка, — пересчитываем с задержкой
+  let lastW = innerWidth;
+  let resizeTimer;
+  const remeasure = () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (innerWidth !== lastW) { lastW = innerWidth; syncDepthTags(); }
+      measure();
+      requestTick();
+    }, 150);
+  };
+  addEventListener('resize', remeasure);
+  addEventListener('load', () => { syncDepthTags(); measure(); requestTick(); });
+  if ('ResizeObserver' in window) new ResizeObserver(remeasure).observe(document.body);
 
   /* ---------- Мобильное меню ---------- */
   const burger = $('#burger');
@@ -176,7 +225,15 @@
   video.addEventListener('play', () => { player.classList.add('is-playing'); video.controls = true; });
   video.addEventListener('ended', () => player.classList.remove('is-playing'));
   const heroVideo = $('.hero__video');
-  if (navigator.connection && navigator.connection.saveData) { heroVideo.removeAttribute('autoplay'); heroVideo.pause(); }
+  const saveData = navigator.connection && navigator.connection.saveData;
+  if (saveData) { heroVideo.removeAttribute('autoplay'); heroVideo.pause(); }
+  // фоновое видео не декодируем, когда первый экран уже прокручен
+  else if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) heroVideo.play().catch(() => {});
+      else heroVideo.pause();
+    }).observe(hero);
+  }
 
   /* ---------- Появление блоков ---------- */
   const revealTargets = $$('.shead, .switch, .who, .row, .drone, .falcon__text, .task, .quote, .player, .promise, .individual, .port, .major, .logos, .acc, .form, .contact__l, .manifest__sign, .sizes, .footer__in');
@@ -205,25 +262,39 @@
     });
     walk(block);
   });
-  function words() {
-    wordBlocks.forEach(block => {
-      const r = block.getBoundingClientRect();
-      const p = Math.min(1, Math.max(0, (innerHeight * 0.85 - r.top) / (r.height + innerHeight * 0.35)));
-      const ws = $$('.w', block);
-      const n = Math.round(p * ws.length);
-      ws.forEach((w, i) => w.classList.toggle('on', i < n));
+  const wordData = wordBlocks.map(block => ({ ws: $$('.w', block), top: 0, h: 0, n: -1 }));
+  measurers.push(() => wordBlocks.forEach((block, i) => {
+    const r = block.getBoundingClientRect();
+    wordData[i].top = r.top + scrollY;
+    wordData[i].h = r.height;
+  }));
+  function words(y) {
+    const vh = metrics.vh;
+    wordData.forEach(d => {
+      const top = d.top - y;
+      const p = Math.min(1, Math.max(0, (vh * 0.85 - top) / (d.h + vh * 0.35)));
+      const n = Math.round(p * d.ws.length);
+      if (n === d.n) return;
+      const from = Math.min(n, d.n < 0 ? 0 : d.n), to = Math.max(n, d.n < 0 ? d.ws.length : d.n);
+      for (let i = from; i < to; i++) d.ws[i].classList.toggle('on', i < n);
+      d.n = n;
     });
   }
 
-  /* ---------- Параллакс кинокадра ---------- */
-  const para = $$('[data-parallax]');
-  function parallax() {
-    if (reduced) return;
-    para.forEach(img => {
-      const r = img.parentElement.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > innerHeight) return;
-      const p = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
-      img.style.transform = `translate3d(0, ${p * -8}%, 0)`;
+  /* ---------- Параллакс кинокадра (только на компьютере) ---------- */
+  const para = reduced || !fine ? [] : $$('[data-parallax]').map(img => ({ img, top: 0, h: 0 }));
+  measurers.push(() => para.forEach(d => {
+    const r = d.img.parentElement.getBoundingClientRect();
+    d.top = r.top + scrollY;
+    d.h = r.height;
+  }));
+  function parallax(y) {
+    const vh = metrics.vh;
+    para.forEach(d => {
+      const top = d.top - y;
+      if (top + d.h < 0 || top > vh) return;
+      const p = (top + d.h / 2 - vh / 2) / vh;
+      d.img.style.transform = `translate3d(0, ${(p * -8).toFixed(2)}%, 0)`;
     });
   }
 
@@ -302,5 +373,6 @@
 
   $('#year').textContent = new Date().getFullYear();
   syncDepthTags();
+  measure();
   onScroll();
 })();
