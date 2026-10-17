@@ -346,18 +346,29 @@ em{font-style:italic;font-family:var(--serif);color:var(--brass);font-weight:400
 .specs dd small{font-size:.4em;font-style:italic;color:var(--brass);margin-left:4px}
 
 /* ---------- Что дрон делает для вас: под водой — лучи света сверху и блики-каустика ---------- */
-.tasks-sec{overflow:hidden;isolation:isolate;background:linear-gradient(180deg,#0d4a5c 0%,#0b3447 35%,#08202f 75%,#061420 100%)}
-.tasks-sec::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.16;pointer-events:none;
-  background:radial-gradient(ellipse 46px 16px at 30% 40%,#bff6ff,transparent 70%),radial-gradient(ellipse 22px 40px at 72% 64%,#bff6ff,transparent 70%),radial-gradient(ellipse 34px 12px at 58% 18%,#bff6ff,transparent 70%),
-             radial-gradient(ellipse 30px 22px at 12% 82%,#bff6ff,transparent 70%),radial-gradient(ellipse 18px 30px at 88% 30%,#bff6ff,transparent 70%);
-  background-size:180px 150px;animation:caustic 14s linear infinite;-webkit-mask-image:linear-gradient(#000,transparent 75%);mask-image:linear-gradient(#000,transparent 75%)}
-@keyframes caustic{to{background-position:180px 150px}}
-.tasks-sec__bg{position:absolute;inset:0;z-index:-1;pointer-events:none}
-.tasks-sec__bg i{position:absolute;top:-10%;height:90%;width:clamp(60px,9vw,150px);background:linear-gradient(180deg,rgba(190,245,255,.22),rgba(190,245,255,0) 80%);transform:skewX(-16deg);filter:blur(8px);transform-origin:top;animation:raySway 10s ease-in-out infinite alternate}
-.tasks-sec__bg i:nth-child(1){left:6%;animation-delay:-2s}.tasks-sec__bg i:nth-child(2){left:24%;width:clamp(30px,4vw,70px);animation-delay:-6s}
-.tasks-sec__bg i:nth-child(3){left:46%;animation-delay:-4s}.tasks-sec__bg i:nth-child(4){left:68%;width:clamp(40px,5vw,90px);animation-delay:-1s}
-.tasks-sec__bg i:nth-child(5){left:86%;animation-delay:-8s}
-@keyframes raySway{from{transform:skewX(-16deg) translateX(-20px);opacity:.6}to{transform:skewX(-8deg) translateX(30px);opacity:1}}
+.tasks-sec{overflow:hidden;isolation:isolate;background:radial-gradient(ellipse 80% 55% at 50% -5%,rgba(120,220,235,.35),transparent 70%),linear-gradient(180deg,#0e5266 0%,#0b3a4f 30%,#082435 62%,#05141f 100%)}
+/* подводная сцена: поверхность снизу в перспективе, лучи, взвесь, дно */
+.uw{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.uw__sky{position:absolute;left:0;right:0;top:0;height:min(46%,560px);perspective:420px;perspective-origin:50% 100%;
+  -webkit-mask:linear-gradient(180deg,#000 30%,transparent);mask:linear-gradient(180deg,#000 30%,transparent)}
+.uw__surface{position:absolute;left:-60%;right:-60%;top:0;height:260%;transform-origin:50% 0;transform:rotateX(-74deg)}
+.uw__surface i{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='c' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='turbulence' baseFrequency='.011' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .78 0 0 0 0 .97 0 0 0 0 1 -7 0 0 0 1.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E") 0 0/512px 512px;opacity:.38;animation:caustA 26s linear infinite;will-change:background-position}
+.uw__surface i+i{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='c' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='turbulence' baseFrequency='.017' numOctaves='2' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .78 0 0 0 0 .97 0 0 0 0 1 -7 0 0 0 1.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E");background-size:380px 380px;opacity:.26;animation:caustB 19s linear infinite;mix-blend-mode:screen}
+@keyframes caustA{to{background-position:512px 1024px}}
+@keyframes caustB{to{background-position:-760px 380px}}
+.uw__rays{position:absolute;left:0;top:0;width:100%;height:100%;max-width:none;mix-blend-mode:screen}
+.uw__ray{transform-box:fill-box;transform-origin:50% 0;animation:ray 9s ease-in-out infinite alternate;animation-delay:var(--d)}
+@keyframes ray{from{opacity:.35;transform:skewX(-4deg)}to{opacity:1;transform:skewX(5deg)}}
+.uw__dust{position:absolute;inset:0}
+.uw__dust i{position:absolute;inset:-20% 0 0;background-image:radial-gradient(circle,rgba(210,250,255,.9) 0 1px,transparent 1.6px),radial-gradient(circle,rgba(210,250,255,.6) 0 .8px,transparent 1.4px);
+  background-size:140px 160px,90px 110px;background-position:0 0,40px 60px;animation:dust 40s linear infinite;opacity:.45}
+.uw__dust i:nth-child(2){background-image:radial-gradient(circle,rgba(210,250,255,.85) 0 1.6px,transparent 2.4px);background-size:230px 260px;background-position:70px 30px;animation-duration:26s;opacity:.4;filter:blur(.4px)}
+.uw__dust i:nth-child(3){background-image:radial-gradient(circle,rgba(210,250,255,.55) 0 3px,transparent 5px);background-size:420px 380px;background-position:160px 120px;animation-duration:16s;opacity:.3;filter:blur(1.5px)}
+@keyframes dust{to{transform:translateY(20%)}}
+.uw__bed{position:absolute;left:0;bottom:0;width:100%;max-width:none;height:min(30%,260px)}
+.uw__bed1{fill:#0a2d3c;opacity:.55}.uw__bed2{fill:#072230;opacity:.8}.uw__bed3{fill:#05141f}
+.tasks-sec .shead{text-shadow:0 2px 30px rgba(3,18,28,.85)}
+.uw::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 75% 70% at 50% 45%,transparent 50%,rgba(2,10,16,.55))}
 .tasks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
 .task{position:relative;overflow:hidden;padding:30px 28px 32px;border-radius:22px;background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid rgba(170,240,255,.18);
   backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:transform .5s var(--ease),border-color .4s,box-shadow .5s}
@@ -740,6 +751,9 @@ em{font-style:italic;font-family:var(--serif);color:var(--brass);font-weight:400
   .row__a{width:0;height:0;border:0;font-size:0;overflow:visible}
   .row:hover{padding-left:0}
   .tasks{grid-template-columns:1fr;gap:12px}
+  .uw__sky{height:380px}
+  .uw__surface i{opacity:.3}.uw__surface i+i{opacity:.2}
+  .task{background:linear-gradient(160deg,rgba(14,52,70,.78),rgba(7,28,40,.72))}
   .task{padding:24px 22px 26px}
   .drone__modes{display:flex}
   .drone__mode{flex:1;padding:9px 6px}
@@ -806,7 +820,7 @@ em{font-style:italic;font-family:var(--serif);color:var(--brass);font-weight:400
   .deck img{top:0;height:100%}
   .reveal{transform:translateY(24px);transition-duration:.8s}
   /* на телефоне фоновые анимации статичны — прокрутка остаётся плавной */
-  .falcon__sweep,.tasks-sec::before,.tasks-sec__bg i,.hud__scan,.seal__ring{animation:none}
+  .falcon__sweep,.uw__surface i,.uw__ray,.uw__dust i,.hud__scan,.seal__ring{animation:none}
   .task{backdrop-filter:none;-webkit-backdrop-filter:none}
   .drone__monitor{transform:none}
 }
