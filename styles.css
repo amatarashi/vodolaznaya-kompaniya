@@ -425,7 +425,8 @@ em{font-style:italic;font-family:var(--serif);color:var(--brass);font-weight:400
 .individual__tags i{font-style:normal;padding:10px 16px;border:1px solid var(--line-2);border-radius:999px;color:#d0cac0;letter-spacing:.1em}
 
 /* ---------- География ---------- */
-.geo{overflow:hidden;isolation:isolate}
+#process{padding-bottom:clamp(40px,5vw,72px)}
+.geo{overflow:hidden;isolation:isolate;padding-top:clamp(48px,6vw,96px)}
 .geo__bg{position:absolute;inset:0;z-index:-1;background:url("assets/port.jpg") right center/auto 100% no-repeat;opacity:.5}
 .geo__bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--ink) 0%,rgba(7,13,20,.92) 45%,rgba(7,13,20,.3) 100%),linear-gradient(180deg,var(--ink),transparent 25%,transparent 75%,var(--ink))}
 .ports{list-style:none;border-top:1px solid var(--line-2);max-width:980px}
@@ -557,12 +558,54 @@ em{font-style:italic;font-family:var(--serif);color:var(--brass);font-weight:400
 .quiz__q{font-family:var(--serif);font-size:clamp(26px,2.6vw,34px);line-height:1.1;margin:14px 0 18px;padding:0}
 .quiz__nav{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
 .quiz__nav .btn--brass{margin-left:auto}
-.ship-meter{position:relative;height:150px;border-radius:16px;overflow:hidden;border:1px solid var(--line);
-  background:linear-gradient(180deg,#0f2a3d 0 60%,#0b3d55 60% 100%)}
-.ship-meter::after{content:"";position:absolute;left:0;right:0;top:60%;height:8px;margin-top:-4px;background:repeating-radial-gradient(circle at 10px -6px,transparent 0 9px,rgba(170,240,255,.35) 9px 10px,transparent 10px 20px);background-size:20px 8px;animation:wave 3s linear infinite}
-@keyframes wave{to{background-position:20px 0}}
-.ship-meter__sea{position:absolute;left:0;right:0;bottom:40%;display:flex;justify-content:center;align-items:flex-end}
-.ship-meter__ship{width:var(--w,34%);color:var(--brass);transition:width .6s var(--ease);margin-bottom:-6px;filter:drop-shadow(0 0 12px rgba(201,169,110,.35));animation:float 4s ease-in-out infinite}
+.ship-meter{position:relative;height:180px;border-radius:16px;overflow:hidden;border:1px solid var(--line);isolation:isolate;
+  background:radial-gradient(ellipse 70% 30% at 70% 52%,rgba(201,169,110,.22),transparent 70%),
+    linear-gradient(180deg,#050f19 0%,#0b2232 32%,#1b4556 51%,#0d3a4e 52.5%,#082b3c 70%,#041824 100%)}
+/* звёзды и дымка над горизонтом */
+.ship-meter::before{content:"";position:absolute;inset:0 0 50% 0;z-index:-1;opacity:.7;
+  background:radial-gradient(1px 1px at 12% 22%,#fff,transparent),radial-gradient(1px 1px at 28% 12%,#cfe,transparent),radial-gradient(1.5px 1.5px at 44% 30%,#fff,transparent),radial-gradient(1px 1px at 58% 10%,#fff,transparent),radial-gradient(1px 1px at 86% 26%,#dff,transparent),radial-gradient(1px 1px at 92% 8%,#fff,transparent),
+    linear-gradient(180deg,transparent 60%,rgba(120,190,205,.18))}
+/* виньетка — объём и глубина */
+.ship-meter::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:radial-gradient(ellipse 85% 90% at 50% 45%,transparent 55%,rgba(2,8,14,.6)),linear-gradient(180deg,rgba(255,255,255,.05),transparent 20%)}
+.ship-meter__sea{position:absolute;inset:0}
+.sea3d__sun{position:absolute;left:72%;top:calc(52% - 22px);width:44px;height:22px;transform:translateX(-50%);border-radius:44px 44px 0 0;
+  background:radial-gradient(circle at 50% 100%,#f6e6bd 0 40%,#d9b878 75%,#b88f52);box-shadow:0 0 40px 14px rgba(201,169,110,.28)}
+.sea3d__path{position:absolute;left:72%;top:52%;bottom:0;width:160px;transform:translateX(-50%);
+  background:repeating-linear-gradient(180deg,rgba(240,214,160,.45) 0 2px,transparent 2px 7px);
+  -webkit-mask:radial-gradient(ellipse 50% 100% at 50% 0,#000 20%,transparent 75%);mask:radial-gradient(ellipse 50% 100% at 50% 0,#000 20%,transparent 75%);animation:glint 3.5s ease-in-out infinite}
+@keyframes glint{50%{background-position:0 4px}}
+.sea3d__w{position:absolute;left:0;width:200%;max-width:none;animation:sea 20s linear infinite;will-change:transform}
+.sea3d__w--far{top:calc(52% - 6px);height:20%;fill:#0f4558;opacity:.75;animation-duration:30s}
+.sea3d__w--mid{bottom:0;height:40%;fill:#09324a;opacity:.92;animation-duration:20s}
+.sea3d__w--near{bottom:0;height:24%;fill:#05202f;animation-duration:13s}
+@keyframes sea{to{transform:translateX(-50%)}}
+/* судно: растёт в длину, а не в высоту — всегда помещается в рамку */
+.ship3d{position:absolute;bottom:21%;left:calc((100% - var(--w,40%)) / 2);width:var(--w,40%);height:72px;
+  transition:width .8s var(--ease),left .8s var(--ease);transform-origin:50% 100%;animation:bob 5s ease-in-out infinite;
+  filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
+@keyframes bob{50%{transform:translateY(-2px) rotate(-.5deg)}}
+.ship3d>span{position:absolute;bottom:20px}
+.ship3d__hull{left:0;right:0;height:24px;bottom:0!important;clip-path:polygon(0 0,100% 0,calc(100% - 24px) 100%,9px 100%);
+  background:linear-gradient(90deg,rgba(0,0,0,.4),transparent 25%,rgba(255,255,255,.1) 75%,rgba(0,0,0,.25)),
+    linear-gradient(180deg,#e2c891 0 2px,#2a4459 2px,#16283a 55%,#8c3328 55%,#5a1f1a)}
+.ship3d__bridge{left:5%;width:46px;height:32px;border-radius:2px 3px 0 0;
+  background:linear-gradient(90deg,rgba(0,0,0,.2),transparent 40%,rgba(0,0,0,.15)),linear-gradient(180deg,#f1ebdd,#b4ad9f)}
+.ship3d__bridge::before{content:"";position:absolute;left:3px;right:3px;top:6px;height:5px;background:repeating-linear-gradient(90deg,#0a2131 0 5px,transparent 5px 8px);box-shadow:0 0 8px rgba(255,214,140,.4)}
+.ship3d__bridge::after{content:"";position:absolute;left:3px;right:12px;top:17px;height:4px;background:repeating-linear-gradient(90deg,rgba(10,33,49,.8) 0 3px,transparent 3px 7px)}
+.ship3d__bridge i{position:absolute;left:8px;bottom:100%;width:13px;height:14px;clip-path:polygon(10% 0,100% 0,100% 100%,0 100%);
+  background:linear-gradient(180deg,#1a2a39 0 4px,#c9a96e 4px 7px,#22384c 7px)}
+.ship3d__cargo{left:calc(5% + 52px);right:32px;height:var(--stack,0px);transition:height .7s var(--ease);
+  background:linear-gradient(90deg,rgba(0,0,0,.3),transparent 35%,rgba(255,255,255,.08) 80%),
+    repeating-linear-gradient(180deg,transparent 0 7px,rgba(5,15,24,.85) 7px 8px),
+    repeating-linear-gradient(90deg,#a24e38 0 15px,#0c1a26 15px 16px,#2f6e86 16px 31px,#0c1a26 31px 32px,#c9a96e 32px 47px,#0c1a26 47px 48px,#6f828f 48px 63px,#0c1a26 63px 64px)}
+.ship3d__mast{right:16%;width:2px;height:38px;background:linear-gradient(#e2c891,#6d5a3a)}
+.ship3d__mast::before{content:"";position:absolute;left:-7px;top:9px;width:16px;height:1.5px;background:#c9a96e}
+.ship3d__mast::after{content:"";position:absolute;left:-2px;top:-3px;width:6px;height:6px;border-radius:50%;background:#ff6a4d;box-shadow:0 0 8px 2px rgba(255,106,77,.7);animation:blink 2s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+.ship3d__shadow{left:2%;right:2%;bottom:-12px!important;height:16px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.5),transparent 70%)}
+.ship3d__foam{right:-10px;bottom:-2px!important;width:34px;height:10px;border-radius:50%;background:radial-gradient(ellipse,rgba(230,250,255,.8),rgba(230,250,255,0) 70%);animation:foam 1.6s ease-in-out infinite}
+@keyframes foam{50%{transform:scaleX(1.25);opacity:.6}}
 .ship-meter__val{position:absolute;top:12px;right:16px;font-family:var(--serif);font-size:30px;line-height:1;color:#fff}
 .ship-meter__range{-webkit-appearance:none;appearance:none;width:100%;height:28px;margin:16px 0 4px;background:transparent;cursor:pointer}
 .ship-meter__range::-webkit-slider-runnable-track{height:2px;background:linear-gradient(90deg,var(--brass) var(--fill,0%),var(--line-2) var(--fill,0%))}
@@ -735,7 +778,7 @@ em{font-style:italic;font-family:var(--serif);color:var(--brass);font-weight:400
   .opt>span{padding:14px 12px}
   .opt b{font-size:17px}
   .quiz__nav .btn{flex:1}
-  .ship-meter{height:130px}
+  .ship-meter{height:160px}
   .promise,.promise+.promise{padding:30px 0;border-left:0;border-bottom:1px solid var(--line)}
   .promise__big{margin:18px 0 20px}
   .geo__bg{background-size:cover;background-position:70% center;opacity:.28}

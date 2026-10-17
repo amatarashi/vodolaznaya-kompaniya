@@ -600,8 +600,9 @@
     lenInput.value = lenLabels[v];
     lenRange.setAttribute('aria-valuetext', lenLabels[v]);
     lenRange.style.setProperty('--fill', (v / 5) * 100 + '%');
-    // кораблик растёт вместе с длиной судна
-    ship.style.setProperty('--w', (v === 0 ? 34 : 30 + v * 13) + '%');
+    // судно вытягивается в длину и обрастает контейнерами — по высоте всегда влезает в рамку
+    ship.style.setProperty('--w', [40, 44, 54, 64, 74, 88][v] + '%');
+    ship.style.setProperty('--stack', [0, 0, 8, 16, 16, 24][v] + 'px');
     renderSummary();
   }
   lenRange.addEventListener('input', updateLength);
