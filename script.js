@@ -12,11 +12,12 @@
     unit: 'm',
     menuOpen: 'Open menu', menuClose: 'Close menu',
     hots: [
-      ['01 · Camera', 'High-definition camera', 'Colour camera on a tilt mechanism: the pilot angles it to examine the hull from any side. Everything it sees is recorded for the report.', ['Tilt mechanism', 'Recorded for the report'], 'CAMERA'],
-      ['02 · Light', 'LED floodlight', 'On-board lighting gives a clear picture at depth, under the bottom and in murky water — where daylight does not reach.', ['LED', 'Murky water', 'Under the bottom'], 'LED LIGHT'],
-      ['03 · Thruster', 'Ducted electric thruster', 'A propeller in a protective duct. Five such thrusters let the pilot manoeuvre precisely along the hull and hold position at any spot.', ['5 thrusters', 'Station keeping'], 'THRUSTER'],
+      ['01 · Camera', 'High-definition camera', 'Colour camera on a tilt mechanism at the front: the pilot angles it to examine the hull from any side. Everything it sees is recorded for the report.', ['Tilt mechanism', 'Recorded for the report'], 'CAMERA'],
+      ['02 · Light', 'LED floodlights', 'Two floodlights at the front give a clear picture at depth, under the bottom and in murky water — where daylight does not reach.', ['LED', 'Murky water', 'Under the bottom'], 'FLOODLIGHTS'],
+      ['03 · Thrusters', 'Ducted electric thrusters', 'Propellers in protective ducts. Five thrusters let the pilot manoeuvre precisely along the hull and hold position at any spot.', ['5 thrusters', 'Station keeping'], 'THRUSTERS'],
       ['04 · Buoyancy', 'Buoyancy blocks', 'The yellow blocks keep the drone neutrally buoyant, so it hovers steadily next to the hull instead of sinking when it stops.', ['Neutral buoyancy', 'Stable hover'], 'BUOYANCY'],
-      ['05 · Frame', 'Protective frame', 'A sturdy frame protects the camera and thrusters when working close to the hull and launching from deck. About one metre long.', ['≈1 m', 'Up to 300 m'], 'FRAME']
+      ['05 · Lifting', 'Lifting eye', 'The drone is lifted by this eye on the top cover with a crane or winch — lowered over the side and brought back on deck.', ['Launch over the side', 'Crane lift'], 'LIFTING EYE'],
+      ['06 · Frame', 'Frame and skids', 'The white frame protects the camera and thrusters near the hull; the skids let the drone stand safely on deck. About one metre long.', ['≈1 m', 'Up to 300 m'], 'FRAME']
     ],
     modes: { photo: 'PHOTO', sonar: 'SONAR', blueprint: 'BLUEPRINT' },
     quiz: { depth: [75, 150, 225, 300] },
@@ -27,11 +28,12 @@
     unit: 'м',
     menuOpen: 'Открыть меню', menuClose: 'Закрыть меню',
     hots: [
-      ['01 · Камера', 'Камера высокого разрешения', 'Цветная камера на поворотном механизме: оператор наклоняет её и рассматривает корпус под нужным углом. Всё, что она видит, записывается для акта.', ['Поворотный механизм', 'Запись для акта'], 'КАМЕРА'],
-      ['02 · Свет', 'Светодиодный прожектор', 'Собственное освещение даёт чёткую картинку на глубине, под днищем и в мутной воде — там, куда не доходит дневной свет.', ['LED', 'Мутная вода', 'Под днищем'], 'ПРОЖЕКТОР'],
-      ['03 · Движение', 'Движитель в насадке', 'Винт в защитном кольце. Пять таких движителей позволяют точно маневрировать вдоль борта и удерживать позицию у нужного участка.', ['5 движителей', 'Удержание позиции'], 'ДВИЖИТЕЛЬ'],
+      ['01 · Камера', 'Камера высокого разрешения', 'Цветная камера на поворотном механизме в передней части: оператор наклоняет её и рассматривает корпус под нужным углом. Всё, что она видит, записывается для акта.', ['Поворотный механизм', 'Запись для акта'], 'КАМЕРА'],
+      ['02 · Свет', 'Светодиодные прожекторы', 'Два прожектора спереди дают чёткую картинку на глубине, под днищем и в мутной воде — там, куда не доходит дневной свет.', ['LED', 'Мутная вода', 'Под днищем'], 'ПРОЖЕКТОРЫ'],
+      ['03 · Движение', 'Движители в насадках', 'Винты в защитных кольцах. Пять движителей позволяют точно маневрировать вдоль борта и удерживать позицию у нужного участка.', ['5 движителей', 'Удержание позиции'], 'ДВИЖИТЕЛИ'],
       ['04 · Плавучесть', 'Блоки плавучести', 'Жёлтые блоки держат аппарат в нейтральной плавучести: он устойчиво висит у корпуса и не тонет, когда останавливается.', ['Нейтральная плавучесть', 'Устойчивость'], 'ПЛАВУЧЕСТЬ'],
-      ['05 · Рама', 'Защитная рама', 'Прочная рама защищает камеру и движители при работе у корпуса и при спуске с борта. Длина аппарата — около метра.', ['≈1 м', 'До 300 м'], 'РАМА']
+      ['05 · Подъём', 'Рым для подъёма', 'За рым на крышке аппарат поднимают краном или лебёдкой: опускают за борт и возвращают на палубу.', ['Спуск за борт', 'Подъём краном'], 'РЫМ'],
+      ['06 · Рама', 'Рама и полозья', 'Белая рама защищает камеру и движители у корпуса судна, а полозья позволяют надёжно ставить аппарат на палубу. Длина — около метра.', ['≈1 м', 'До 300 м'], 'РАМА']
     ],
     modes: { photo: 'ФОТО', sonar: 'СОНАР', blueprint: 'ЧЕРТЁЖ' },
     quiz: { depth: [75, 150, 225, 300] },
@@ -262,6 +264,9 @@
   const tourBtn = $('#droneTour');
   const tourBar = $('#droneBar');
   const introHTML = tip.innerHTML;
+  // для прожекторов и движителей есть отдельный крупный снимок — он резче, чем увеличенный общий вид
+  const DETAIL = [null, { x: '77%', y: '46%', s: 1.35 }, { x: '47%', y: '51%', s: 1.3 }, null, null, null];
+  const detail = $('#droneDetail');
   const hudTarget = $('#hudTarget');
   const hudZoom = $('#hudZoom');
   const hudMode = $('#hudMode');
@@ -278,6 +283,13 @@
       h.classList.toggle('is-active', on);
       h.setAttribute('aria-pressed', on);
     });
+    const dd = i >= 0 && detail ? DETAIL[i] : null;
+    if (detail) detail.classList.toggle('is-on', !!dd);
+    if (dd) {
+      detail.style.setProperty('--dx', dd.x);
+      detail.style.setProperty('--dy', dd.y);
+      detail.style.setProperty('--ds', dd.s);
+    }
     if (i < 0) {
       stage.classList.remove('is-zoomed');
       stage.style.removeProperty('--zx');
@@ -294,7 +306,7 @@
       stage.classList.add('is-zoomed');
       const [m, t, d, chips, target] = T.hots[i];
       hudTarget.textContent = target;
-      hudZoom.textContent = matchMedia('(max-width: 640px)').matches ? '2.1×' : '2.0×';
+      hudZoom.textContent = dd ? 'HD' : (matchMedia('(max-width: 640px)').matches ? '2.1×' : '2.0×');
       tip.innerHTML = `<span class="mono">${m}</span><b>${t}</b><span>${d}</span>` +
         `<span class="drone__chips">${chips.map(c => `<i>${c}</i>`).join('')}</span>`;
       count.innerHTML = `<b>${pad2(i + 1)}</b> / ${pad2(hots.length)}`;
@@ -371,7 +383,7 @@
   // режимы изображения: фото, сонар, чертёж
   $$('.drone__mode').forEach(btn => btn.addEventListener('click', () => {
     const mode = btn.dataset.mode;
-    stage.dataset.mode = mode;
+    frame.dataset.mode = mode;
     hudMode.textContent = T.modes[mode];
     $$('.drone__mode').forEach(b => {
       const on = b === btn;
