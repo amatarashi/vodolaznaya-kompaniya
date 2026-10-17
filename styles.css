@@ -232,6 +232,8 @@ em{font-style:italic;font-family:var(--serif);color:var(--brass);font-weight:400
 .drone__tip b{font-family:var(--serif);font-weight:400;font-size:24px;color:#fff;line-height:1.1}
 .falcon__lead{font-family:var(--serif);font-size:clamp(24px,2.2vw,32px);line-height:1.2;margin-bottom:22px;color:#1a1d21}
 .falcon__text>p:not(.falcon__lead){color:#4d5056;font-weight:400}
+.falcon__text>p+p{margin-top:14px}
+.falcon__text>.falcon__model{font-size:13px;color:#7a7468}
 .specs{display:grid;grid-template-columns:1fr 1fr;margin-top:40px;border-top:1px solid rgba(26,29,33,.18)}
 .specs div{padding:22px 0;border-bottom:1px solid rgba(26,29,33,.18)}
 .specs div:nth-child(odd){padding-right:20px;border-right:1px solid rgba(26,29,33,.18)}
@@ -388,6 +390,44 @@ em{font-style:italic;font-family:var(--serif);color:var(--brass);font-weight:400
 .footer__bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted)}
 .mbar{display:none}
 
+/* ---------- Переключатель языка ---------- */
+.lang{font-family:var(--mono);font-size:11px;letter-spacing:.14em;padding:8px 12px;border:1px solid var(--line-2);border-radius:999px;color:#d8d2c8;transition:border-color .3s,color .3s;flex-shrink:0}
+.lang:hover{border-color:var(--brass);color:var(--brass)}
+
+/* ---------- Согласие в форме ---------- */
+.agree{display:flex;gap:12px;align-items:flex-start;margin-top:22px;font-size:14px;line-height:1.5;color:#cfc9be;cursor:pointer}
+.agree input{position:absolute;opacity:0;width:1px;height:1px}
+.agree__box{flex-shrink:0;width:22px;height:22px;margin-top:1px;border:1px solid var(--line-2);border-radius:5px;display:grid;place-items:center;transition:background .3s,border-color .3s}
+.agree__box::after{content:"";width:10px;height:6px;border-left:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:rotate(-45deg) translate(1px,-1px);opacity:0;transition:opacity .2s}
+.agree input:checked+.agree__box{background:var(--brass);border-color:var(--brass)}
+.agree input:checked+.agree__box::after{opacity:1}
+.agree input:focus-visible+.agree__box{outline:1px solid var(--brass);outline-offset:3px}
+.agree.is-error .agree__box{border-color:#e5484d}
+.agree.is-error{color:#f2a3a5}
+.agree a,.form__note a,.footer__legal a{color:var(--brass);border-bottom:1px solid rgba(201,169,110,.4)}
+.agree a:hover,.form__note a:hover{border-color:var(--brass)}
+.footer__legal{display:flex;flex-wrap:wrap;gap:6px 18px}
+
+/* ---------- Страницы документов ---------- */
+.doc-head{border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;background:rgba(7,13,20,.96)}
+.doc-head__in{display:flex;align-items:center;gap:18px;height:76px}
+.doc-head .lang{margin-left:auto}
+.doc-back{margin-top:0;font-size:14px}
+.doc{max-width:860px;padding-top:clamp(48px,7vw,96px);padding-bottom:clamp(64px,9vw,120px)}
+.doc__kicker{color:var(--brass);margin-bottom:22px}
+.doc .h2{margin-bottom:40px}
+.doc__toc{display:grid;gap:6px;padding:22px 0;margin-bottom:24px;border-block:1px solid var(--line);font-size:15px}
+.doc__toc a{color:#cfc9be}
+.doc__toc a:hover{color:var(--brass)}
+.doc section{padding-top:14px}
+.doc h2{font-family:var(--serif);font-weight:500;font-size:clamp(24px,2.4vw,30px);line-height:1.2;margin:34px 0 14px}
+.doc p{color:#cfc9be;font-weight:300;margin-bottom:12px}
+.doc b{color:var(--text);font-weight:600}
+.doc a{color:var(--brass)}
+.doc-foot{border-top:1px solid var(--line);padding:28px 0 calc(28px + env(safe-area-inset-bottom));color:var(--muted)}
+.doc-foot__in{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+.doc-foot a:hover{color:var(--brass)}
+
 /* ================= Адаптив ================= */
 @media (max-width:1280px){
   .header__phone{display:none}
@@ -438,6 +478,9 @@ em{font-style:italic;font-family:var(--serif);color:var(--brass);font-weight:400
   .nav{inset:68px 0 auto 0;height:calc(100dvh - 68px)}
   .logo__txt{font-size:21px}
   .logo__txt small{display:none}
+  .header__in{gap:12px}
+  .lang{padding:7px 10px}
+  .doc-head__in{gap:12px;height:68px}
   .hero{padding:110px 0 36px}
   .hero__meta span:last-child{display:none}
   .hero__title{font-size:clamp(46px,14.5vw,80px)}

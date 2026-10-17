@@ -10,10 +10,10 @@
 <meta property="og:description" content="Водолазы и дрон Falcon. Осмотр до 3 часов, акт и видео по ПП №1867.">
 <meta property="og:image" content="assets/diver.jpg">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23070d14'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23c9a96e' stroke-width='1.5'/%3E%3Cpath d='M16 4v24M4 16h24' stroke='%23c9a96e' stroke-width='1'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
 <link rel="stylesheet" href="styles.css">
+<link rel="alternate" hreflang="ru" href="https://vodolaznaya-kompaniya.vercel.app/">
+<link rel="alternate" hreflang="en" href="https://vodolaznaya-kompaniya.vercel.app/en/">
 <script>
   // до отрисовки: не восстанавливать прошлую прокрутку и не прыгать по #якорю
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -59,6 +59,7 @@
     </nav>
     <span class="header__depth" aria-hidden="true"><b data-depth>000</b> м</span>
     <a href="tel:+79113124949" class="header__phone">+7 (911) 312-49-49</a>
+    <a href="en/" class="lang" hreflang="en" lang="en" aria-label="English version">EN</a>
     <a href="#contact" class="btn btn--line btn--sm header__cta magnetic">Связаться</a>
     <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav"><span></span><span></span></button>
   </div>
@@ -243,8 +244,10 @@
       </figure>
 
       <div class="falcon__text">
-        <p class="falcon__lead">Профессиональный портативный подводный аппарат. Самая успешная электрическая подводная робототехническая система своего класса.</p>
-        <p>Falcon проверен в&nbsp;многочисленных сложных и&nbsp;ответственных миссиях в&nbsp;коммерческом, охранном и&nbsp;научном секторах. Он обеспечивает исключительную точность управления и&nbsp;диагностику в&nbsp;реальном времени, позволяет настраивать экран пилота и&nbsp;включать автоматическое удержание позиции.</p>
+        <p class="falcon__lead">Вы видите подводную часть своего судна на&nbsp;мониторе прямо во&nbsp;время осмотра — не&nbsp;дожидаясь отчёта.</p>
+        <p>Оператор управляет дроном с&nbsp;палубы: ведёт его вдоль корпуса, останавливает у&nbsp;нужного участка и&nbsp;записывает видео для акта. Вы или ваш капитан можете смотреть трансляцию рядом с&nbsp;оператором и&nbsp;сразу попросить показать любой участок ближе.</p>
+        <p>Дрон лёгкий и&nbsp;быстро спускается с&nbsp;борта, поэтому осмотр укладывается в&nbsp;стоянку и&nbsp;не&nbsp;задерживает судно. Там, где спуск водолаза затруднён, первым идёт дрон, и&nbsp;люди не&nbsp;рискуют без необходимости.</p>
+        <p class="falcon__model">Аппарат — Saab Seaeye Falcon, профессиональный телеуправляемый подводный аппарат (ТНПА).</p>
         <dl class="specs">
           <div><dt class="mono">Рабочая глубина</dt><dd>300<small>м</small></dd></div>
           <div><dt class="mono">Длина аппарата</dt><dd>≈1<small>м</small></dd></div>
@@ -427,8 +430,12 @@
         <label><input type="radio" name="format" value="Подскажите"><span>Подскажите</span></label>
       </fieldset>
       <label class="field"><textarea name="comment" rows="2" placeholder=" "></textarea><span>Комментарий — например, судно на якоре, нужен акт</span></label>
+      <label class="agree" id="agreeLabel">
+        <input type="checkbox" name="agree" required>
+        <span class="agree__box" aria-hidden="true"></span>
+        <span>Я&nbsp;даю <a href="consent.html" target="_blank" rel="noopener">согласие на&nbsp;обработку персональных данных</a> и&nbsp;ознакомлен(а) с&nbsp;<a href="privacy.html" target="_blank" rel="noopener">политикой конфиденциальности</a></span>
+      </label>
       <button class="btn btn--brass btn--full magnetic" type="submit">Получить расчёт <span class="arr" aria-hidden="true">→</span></button>
-      <p class="form__note">Нажимая кнопку, вы соглашаетесь с&nbsp;обработкой персональных данных.</p>
       <div class="form__ok" id="formOk" hidden>
         <b>Спасибо. Заявка сформирована.</b>
         <p>Откроется почтовая программа с&nbsp;готовым письмом — нажмите «Отправить». Если не&nbsp;открылась, позвоните: <a href="tel:+79113124949">+7 (911) 312-49-49</a>.</p>
@@ -448,7 +455,7 @@
       <div class="footer__up"><a href="#top" class="logo-up" data-top>Наверх <span aria-hidden="true">↑</span></a></div>
     </div>
     <a href="#top" class="footer__word" data-top aria-label="ФлотСервис — в начало сайта">ФлотСервис</a>
-    <div class="footer__bottom mono"><span>© <span id="year">2026</span> ООО «ФлотСервис»</span><span>Надёжность · Опыт · Безопасность</span></div>
+    <div class="footer__bottom mono"><span>© <span id="year">2026</span> ООО «ФлотСервис»</span><span class="footer__legal"><a href="privacy.html">Политика конфиденциальности</a><a href="consent.html">Согласие на обработку данных</a></span></div>
   </div>
 </footer>
 

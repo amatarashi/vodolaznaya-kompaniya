@@ -6,6 +6,34 @@
   const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
   const pad = n => String(n).padStart(3, '0');
 
+  /* ---------- Тексты для русской и английской версий ---------- */
+  const EN = document.documentElement.lang === 'en';
+  const T = EN ? {
+    unit: 'm',
+    menuOpen: 'Open menu', menuClose: 'Close menu',
+    hots: [
+      ['01 · Camera', 'High-definition camera', 'Colour camera on a tilt mechanism: the pilot angles it to examine the hull from any side.'],
+      ['02 · Lights', 'LED floodlights', 'On-board lighting gives a clear picture at depth, under the bottom and in murky water.'],
+      ['03 · Thrusters', 'Electric thrusters', 'Five thrusters let the pilot manoeuvre precisely along the hull and hold position at any spot.'],
+      ['04 · Frame', 'Buoyancy and protective frame', 'About one metre long: launched quickly from deck, rated to 300 m depth.']
+    ],
+    mailSubject: 'Hull inspection request / Заявка на осмотр судна',
+    mailTitle: 'Request from the FlotService website (English version)',
+    labels: ['Name / Имя', 'Phone / Телефон', 'Company / Компания', 'Vessel / Судно', 'Vessel length / Длина', 'Port / Порт', 'Service / Формат', 'Comment / Комментарий']
+  } : {
+    unit: 'м',
+    menuOpen: 'Открыть меню', menuClose: 'Закрыть меню',
+    hots: [
+      ['01 · Камера', 'Камера высокого разрешения', 'Цветная камера на поворотном механизме: оператор наклоняет её и рассматривает корпус под нужным углом.'],
+      ['02 · Свет', 'Светодиодные прожекторы', 'Собственное освещение даёт чёткую картинку даже на глубине, под днищем и в мутной воде.'],
+      ['03 · Движение', 'Электрические движители', 'Пять движителей позволяют точно маневрировать вдоль борта и удерживать позицию у нужного участка.'],
+      ['04 · Корпус', 'Плавучесть и защитная рама', 'Лёгкий аппарат длиной около метра: быстро спускается с борта и работает на глубине до 300 м.']
+    ],
+    mailSubject: 'Заявка на осмотр судна',
+    mailTitle: 'Заявка с сайта ФлотСервис',
+    labels: ['Имя', 'Телефон', 'Компания', 'Судно', 'Длина судна', 'Порт', 'Формат', 'Комментарий']
+  };
+
   /* ---------- Сайт всегда открывается с первого экрана ---------- */
   // браузер не должен восстанавливать прошлую позицию или прыгать по #якорю из адреса
   const toTop = () => {
@@ -87,7 +115,7 @@
     $$('.depth-tag:not(.depth-tag--fixed)').forEach(tag => {
       const sec = tag.closest('section');
       const y = Math.min(max, Math.max(0, sec.offsetTop - innerHeight * 0.4));
-      tag.textContent = '— ' + Math.round((y / max) * MAX_DEPTH) + ' м';
+      tag.textContent = '— ' + Math.round((y / max) * MAX_DEPTH) + ' ' + T.unit;
     });
   }
 
@@ -174,7 +202,7 @@
     nav.classList.toggle('is-open', open);
     if (open) header.classList.remove('is-hidden');
     burger.setAttribute('aria-expanded', open);
-    burger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
+    burger.setAttribute('aria-label', open ? T.menuClose : T.menuOpen);
     document.body.style.overflow = open ? 'hidden' : '';
     mbar.style.visibility = open ? 'hidden' : '';
   };
@@ -202,15 +230,9 @@
   }));
 
   /* ---------- Точки на дроне ---------- */
-  const HOTS = [
-    ['01 · Камера', 'Камера высокого разрешения', 'Цветная камера на поворотном механизме: оператор наклоняет её и рассматривает корпус под нужным углом.'],
-    ['02 · Свет', 'Светодиодные прожекторы', 'Собственное освещение даёт чёткую картинку даже на глубине, под днищем и в мутной воде.'],
-    ['03 · Движение', 'Электрические движители', 'Пять движителей позволяют точно маневрировать вдоль борта и удерживать позицию у нужного участка.'],
-    ['04 · Корпус', 'Плавучесть и защитная рама', 'Лёгкий аппарат длиной около метра: быстро спускается с борта и работает на глубине до 300 м.']
-  ];
   const tip = $('#droneTip');
   $$('.hot').forEach(h => h.addEventListener('click', () => {
-    const [m, t, d] = HOTS[h.dataset.hot];
+    const [m, t, d] = T.hots[h.dataset.hot];
     $$('.hot').forEach(x => x.classList.toggle('is-active', x === h));
     tip.innerHTML = `<span class="mono">${m}</span><b>${t}</b><span>${d}</span>`;
   }));
@@ -352,10 +374,19 @@
     else if (!form.elements.comment.value) form.elements.comment.value = f;
   }));
 
-  // маска телефона +7 (XXX) XXX-XX-XX
+  const digits = () => phone.value.replace(/\D/g, '').length;
+  const agree = form.elements.agree;
+  const agreeLabel = $('#agreeLabel');
+  agree.addEventListener('change', () => agreeLabel.classList.remove('is-error'));
+
+  // маска телефона +7 (XXX) XXX-XX-XX — только в русской версии;
+  // в английской номер может быть иностранным, поэтому вводится свободно
   phone.addEventListener('input', () => {
+    phone.classList.remove('is-error');
+    if (EN) return;
     let d = phone.value.replace(/\D/g, '');
     if (!d) { phone.value = ''; return; }
+    if (phone.value.trim().startsWith('+') && !phone.value.trim().startsWith('+7')) return; // иностранный номер
     if (d.startsWith('8')) d = '7' + d.slice(1);
     if (!d.startsWith('7')) d = '7' + d;
     d = d.slice(0, 11);
@@ -367,32 +398,38 @@
     if (p[2]) out += '-' + p[2];
     if (p[3]) out += '-' + p[3];
     phone.value = out;
-    phone.classList.remove('is-error');
   });
 
   form.addEventListener('submit', e => {
     e.preventDefault();
-    if (phone.value.replace(/\D/g, '').length < 11) {
+    const isRuMasked = !EN && phone.value.startsWith('+7');
+    if (isRuMasked ? digits() < 11 : digits() < 7) {
       phone.classList.add('is-error');
       phone.focus();
       return;
     }
+    if (!agree.checked) {
+      agreeLabel.classList.add('is-error');
+      agree.focus();
+      return;
+    }
     const f = form.elements;
+    const L = T.labels;
     const body = [
-      'Заявка с сайта ФлотСервис',
+      T.mailTitle,
       '',
-      'Имя: ' + (f.name.value || '—'),
-      'Телефон: ' + f.phone.value,
-      'Компания: ' + (f.company.value || '—'),
-      'Судно: ' + (f.vessel.value || '—'),
-      'Длина судна: ' + f.length.value,
-      'Порт: ' + f.port.value,
-      'Формат: ' + f.format.value,
-      'Комментарий: ' + (f.comment.value || '—')
+      L[0] + ': ' + (f.name.value || '—'),
+      L[1] + ': ' + f.phone.value,
+      L[2] + ': ' + (f.company.value || '—'),
+      L[3] + ': ' + (f.vessel.value || '—'),
+      L[4] + ': ' + f.length.value,
+      L[5] + ': ' + f.port.value,
+      L[6] + ': ' + f.format.value,
+      L[7] + ': ' + (f.comment.value || '—')
     ].join('\n');
     $('#formOk').hidden = false;
     location.href = 'mailto:flotservicecompany@mail.ru?subject=' +
-      encodeURIComponent('Заявка на осмотр судна') + '&body=' + encodeURIComponent(body);
+      encodeURIComponent(T.mailSubject) + '&body=' + encodeURIComponent(body);
   });
 
   $('#year').textContent = new Date().getFullYear();
